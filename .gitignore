@@ -1,3 +1,4 @@
 ./Singlife Data Scientist Case Study.pdf
-./data/
+./data/*
 .env
+.venv
