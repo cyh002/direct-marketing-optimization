@@ -1,0 +1,19 @@
+# @package _global_
+model:
+  name: RandomForestRegressor
+  n_estimators: 100
+  max_depth: null
+  min_samples_split: 2
+  min_samples_leaf: 1
+  max_features: "auto"
+  bootstrap: true
+
+hydra:
+  sweeper:
+    params:
+      model.n_estimators: range(50, 200, step=10)
+      model.max_depth: choice(None, 10, 20, 30)
+      model.min_samples_split: range(2, 11)
+      model.min_samples_leaf: range(1, 11)
+      model.max_features: choice("auto", "sqrt", "log2")
+      model.bootstrap: choice(true, false)

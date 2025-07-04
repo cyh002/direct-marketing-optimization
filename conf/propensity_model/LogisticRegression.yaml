@@ -1,0 +1,15 @@
+# @package _global_
+model:
+  name: LogisticRegressionRegressor
+  penalty: "l2"
+  tol: 0.0001
+  C: 1.0  # This will be overridden by Optuna
+  fit_intercept: true
+  solver: "liblinear"
+  l1_ratio: null  # Applicable only for certain solvers
+
+hydra:
+  sweeper:
+    params:
+        model.C: range(0.01, 1.0, step=0.01)
+        model.penalty: choice("l1", "l2")

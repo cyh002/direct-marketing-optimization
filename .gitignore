@@ -1,4 +1,5 @@
-./Singlife Data Scientist Case Study.pdf
-./data/*
+Singlife Data Scientist Case Study.pdf
+data/*
 .env
 .venv
+outputs/*
