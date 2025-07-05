@@ -1,67 +1,73 @@
-"""Entry point for the direct marketing optimization pipeline."""
-from __future__ import annotations
-
-from pathlib import Path
-
+import os
+from concurrent.futures import ThreadPoolExecutor
+import joblib
 import hydra
 from hydra.utils import get_original_cwd
-from omegaconf import DictConfig
+from omegaconf import DictConfig, OmegaConf
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestRegressor
 
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
-from src.logging import get_logger
+from src.trainer import PropensityTrainer, RevenueTrainer
 
 
-@hydra.main(config_path="conf", config_name="config", version_base=None)
+@hydra.main(config_path="conf/", config_name="config")
 def main(cfg: DictConfig) -> None:
-    """Run data loading and preprocessing steps.
+    config_dict = OmegaConf.to_container(cfg, resolve=True)
+    loader = DataLoader(config=config_dict)
+    loader.config_loader.base_dir = os.path.join(get_original_cwd(), "conf")
 
-    This function loads the datasets defined in the project configuration,
-    performs basic preprocessing, and prepares the feature pipeline. Further
-    steps like model training and optimization will be implemented later.
-
-    Args:
-        cfg: Hydra configuration object.
-    """
-    logger = get_logger(__name__)
-    logger.info("Starting direct marketing optimization pipeline")
-
-    config_path = Path(get_original_cwd()) / "conf" / "config.yaml"
-
-    # Load datasets
-    loader = DataLoader(config_path=str(config_path))
     datasets = loader.load_configured_sheets()
-    logger.info("Loaded datasets: %s", list(datasets))
-
-    # Split into clients with/without sales data
-    with_sales, without_sales = loader.create_sales_data_split(datasets)
-    logger.info(
-        "Created sales split. With sales: %d, Without sales: %d",
-        len(with_sales),
-        len(without_sales),
-    )
-
-    # Set up preprocessor
+    with_sales, _ = loader.create_sales_data_split(datasets)
     preprocessor = Preprocessor(loader.get_config())
-    train_sets, test_sets = preprocessor.create_model_train_test_split(with_sales)
-    logger.info(
-        "Train datasets: %s, Test datasets: %s",
-        list(train_sets),
-        list(test_sets),
+    train_sets, _ = preprocessor.create_model_train_test_split(
+        with_sales, test_size=0.2, random_state=cfg.training.random_seed
     )
+    merged = preprocessor.merge_datasets(train_sets, base_dataset_key="Sales_Revenues_train")
+    if cfg.training.sample_fraction < 1.0:
+        merged = merged.sample(frac=cfg.training.sample_fraction, random_state=cfg.training.random_seed)
+    numeric, categorical = loader.get_feature_lists()
+    X = merged[numeric + categorical]
+    pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
 
-    base_train_key = next(key for key in train_sets if "Sales_Revenues" in key)
-    base_test_key = next(key for key in test_sets if "Sales_Revenues" in key)
-    merged_train = preprocessor.merge_datasets(train_sets, base_dataset_key=base_train_key)
-    merged_test = preprocessor.merge_datasets(test_sets, base_dataset_key=base_test_key)
-    logger.info("Merged train shape: %s, test shape: %s", merged_train.shape, merged_test.shape)
+    mlflow_cfg = loader.config.mlflow
 
-    numeric_features, categorical_features = loader.get_feature_lists()
-    pipeline = preprocessor.create_preprocessing_pipeline(numeric_features, categorical_features)
-    preprocessor.analyze_data_quality(merged_train, show_columns=False)
+    def train_for_product(product: str) -> None:
+        y_propensity = merged[f"{cfg.targets.propensity}_{product}"]
+        y_revenue = merged[f"{cfg.targets.revenue}_{product}"]
+        prop_out = os.path.join(cfg.training.model_dump_path, "propensity", product)
+        rev_out = os.path.join(cfg.training.model_dump_path, "revenue", product)
+        os.makedirs(prop_out, exist_ok=True)
+        os.makedirs(rev_out, exist_ok=True)
 
-    logger.info("Preprocessing pipeline ready: %s", pipeline)
-    logger.info("Pipeline completed")
+        if cfg.training.train_enabled:
+            prop_trainer = PropensityTrainer(
+                model=LogisticRegression(max_iter=200),
+                preprocessor=pipeline,
+                scoring=cfg.training.propensity_scoring,
+                cv=cfg.training.k_folds,
+                output_dir=prop_out,
+                mlflow_config=mlflow_cfg,
+            )
+            prop_trainer.fit(X, y_propensity)
+
+            rev_trainer = RevenueTrainer(
+                model=RandomForestRegressor(),
+                preprocessor=pipeline,
+                scoring=cfg.training.revenue_scoring,
+                cv=cfg.training.k_folds,
+                output_dir=rev_out,
+                mlflow_config=mlflow_cfg,
+            )
+            rev_trainer.fit(X, y_revenue)
+        else:
+            # Load existing models if training is disabled
+            joblib.load(os.path.join(prop_out, "LogisticRegression.joblib"))
+            joblib.load(os.path.join(rev_out, "RandomForestRegressor.joblib"))
+
+    with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
+        executor.map(train_for_product, cfg.products)
 
 
 if __name__ == "__main__":

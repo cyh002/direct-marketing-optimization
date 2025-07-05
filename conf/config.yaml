@@ -89,6 +89,13 @@ training:
   propensity_scoring: "f1"
   revenue_scoring: "neg_root_mean_squared_error"
   model_dump_path: "../outputs/models"
+  sample_fraction: 1.0
+  train_enabled: true
+
+mlflow:
+  enabled: false
+  tracking_uri: ${oc.env:MLFLOW_TRACKING_URI, "http://localhost:5000"}
+  experiment_name: ${oc.env:MLFLOW_EXPERIMENT_NAME, "direct_marketing"}
 
 hydra:
   sweeper:
@@ -99,8 +106,3 @@ hydra:
     storage: null
     n_trials: 2
     n_jobs: 1
-
-mlflow:
-  tracking_uri: "http://localhost:5000"
-  experiment_name: "Direct Marketing Optimization"
-  run_name: "run_{time}"

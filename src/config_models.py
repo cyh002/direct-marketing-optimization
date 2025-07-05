@@ -28,9 +28,32 @@ class DataConfig(BaseModel):
     raw_excel_path: str
     sheets: List[str]
 
+
+class TrainingConfig(BaseModel):
+    """Configuration for model training."""
+
+    k_folds: int = 5
+    random_seed: int = 42
+    propensity_scoring: str = "f1"
+    revenue_scoring: str = "neg_root_mean_squared_error"
+    model_dump_path: str = "../outputs/models"
+    sample_fraction: float = 1.0
+    train_enabled: bool = True
+
+
+class MlflowConfig(BaseModel):
+    enabled: bool = False
+    tracking_uri: str = "http://localhost:5000"
+    experiment_name: str = "direct_marketing"
+
 class ConfigSchema(BaseModel):
     data: DataConfig
     preprocessing: PreprocessingConfig
     products: List[str]
     targets: Dict[str, str]
+    training: TrainingConfig = TrainingConfig()
+    mlflow: MlflowConfig = MlflowConfig()
+
+    class Config:
+        extra = "ignore"
 

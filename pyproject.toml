@@ -12,6 +12,7 @@ dependencies = [
     "jupyter>=1.1.1",
     "lazypredict>=0.2.16",
     "matplotlib>=3.10.3",
+    "mlflow>=3.1.1",
     "numpy>=2.3.1",
     "omegaconf>=2.3.0",
     "openpyxl>=3.1.5",
