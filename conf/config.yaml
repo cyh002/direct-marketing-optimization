@@ -85,7 +85,9 @@ training:
   random_seed: 42
   propensity_scoring: "f1"
   revenue_scoring: "neg_root_mean_squared_error"
-  output_dir: "outputs/models"
+  model_dump_path: "../outputs/models"
+  sample_fraction: 1.0
+  train_enabled: true
 
 mlflow:
   enabled: false

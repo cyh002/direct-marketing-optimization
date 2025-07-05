@@ -1,4 +1,6 @@
 import os
+from concurrent.futures import ThreadPoolExecutor
+import joblib
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
@@ -23,33 +25,49 @@ def main(cfg: DictConfig) -> None:
         with_sales, test_size=0.2, random_state=cfg.training.random_seed
     )
     merged = preprocessor.merge_datasets(train_sets, base_dataset_key="Sales_Revenues_train")
+    if cfg.training.sample_fraction < 1.0:
+        merged = merged.sample(frac=cfg.training.sample_fraction, random_state=cfg.training.random_seed)
     numeric, categorical = loader.get_feature_lists()
     X = merged[numeric + categorical]
-    y_propensity = merged[f"{cfg.targets.propensity}_CC"]
-    y_revenue = merged[f"{cfg.targets.revenue}_CC"]
     pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
 
     mlflow_cfg = loader.config.mlflow
 
-    prop_trainer = PropensityTrainer(
-        model=LogisticRegression(max_iter=200),
-        preprocessor=pipeline,
-        scoring=cfg.training.propensity_scoring,
-        cv=cfg.training.k_folds,
-        output_dir=cfg.training.output_dir,
-        mlflow_config=mlflow_cfg,
-    )
-    prop_trainer.fit(X, y_propensity)
+    def train_for_product(product: str) -> None:
+        y_propensity = merged[f"{cfg.targets.propensity}_{product}"]
+        y_revenue = merged[f"{cfg.targets.revenue}_{product}"]
+        prop_out = os.path.join(cfg.training.model_dump_path, "propensity", product)
+        rev_out = os.path.join(cfg.training.model_dump_path, "revenue", product)
+        os.makedirs(prop_out, exist_ok=True)
+        os.makedirs(rev_out, exist_ok=True)
 
-    rev_trainer = RevenueTrainer(
-        model=RandomForestRegressor(),
-        preprocessor=pipeline,
-        scoring=cfg.training.revenue_scoring,
-        cv=cfg.training.k_folds,
-        output_dir=cfg.training.output_dir,
-        mlflow_config=mlflow_cfg,
-    )
-    rev_trainer.fit(X, y_revenue)
+        if cfg.training.train_enabled:
+            prop_trainer = PropensityTrainer(
+                model=LogisticRegression(max_iter=200),
+                preprocessor=pipeline,
+                scoring=cfg.training.propensity_scoring,
+                cv=cfg.training.k_folds,
+                output_dir=prop_out,
+                mlflow_config=mlflow_cfg,
+            )
+            prop_trainer.fit(X, y_propensity)
+
+            rev_trainer = RevenueTrainer(
+                model=RandomForestRegressor(),
+                preprocessor=pipeline,
+                scoring=cfg.training.revenue_scoring,
+                cv=cfg.training.k_folds,
+                output_dir=rev_out,
+                mlflow_config=mlflow_cfg,
+            )
+            rev_trainer.fit(X, y_revenue)
+        else:
+            # Load existing models if training is disabled
+            joblib.load(os.path.join(prop_out, "LogisticRegression.joblib"))
+            joblib.load(os.path.join(rev_out, "RandomForestRegressor.joblib"))
+
+    with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
+        executor.map(train_for_product, cfg.products)
 
 
 if __name__ == "__main__":

@@ -30,11 +30,15 @@ class DataConfig(BaseModel):
 
 
 class TrainingConfig(BaseModel):
+    """Configuration for model training."""
+
     k_folds: int = 5
     random_seed: int = 42
     propensity_scoring: str = "f1"
     revenue_scoring: str = "neg_root_mean_squared_error"
-    output_dir: str = "outputs/models"
+    model_dump_path: str = "../outputs/models"
+    sample_fraction: float = 1.0
+    train_enabled: bool = True
 
 
 class MlflowConfig(BaseModel):
