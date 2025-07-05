@@ -1,0 +1,44 @@
+import numpy as np
+import pytest
+from src.evaluator import Evaluator
+from src.metrics import (
+    TotalRevenueMetric,
+    RevenuePerContactMetric,
+    AcceptanceRateMetric,
+    ROIMetric,
+)
+from src.optimizer import Optimizer
+
+
+def test_evaluator_metrics():
+    selection = np.array([[1, 0], [0, 1]])
+    propensity = np.array([[0.5, 0.2], [0.1, 0.8]])
+    revenue = np.array([[100, 50], [200, 150]])
+
+    evaluator = Evaluator(
+        config=None,
+        metrics=[
+            TotalRevenueMetric(),
+            RevenuePerContactMetric(),
+            AcceptanceRateMetric(),
+            ROIMetric(cost_per_contact=2.0),
+        ],
+        cost_per_contact=2.0,
+    )
+    results = evaluator.evaluate(selection, propensity, revenue)
+    expected_total = (0.5 * 100) + (0.8 * 150)
+    assert results["total_revenue"] == pytest.approx(expected_total)
+    assert results["revenue_per_contact"] == pytest.approx(expected_total / 2)
+    expected_acc = (0.5 + 0.8) / 2
+    assert results["acceptance_rate"] == pytest.approx(expected_acc)
+    assert results["roi"] == pytest.approx(expected_total / (2 * 2.0))
+
+
+def test_optimizer_simple():
+    rev = np.array([[20, 10], [30, 5], [25, 15]])
+    opt = Optimizer(contact_limit=2)
+    selection = opt.solve(rev)
+    assert selection.shape == rev.shape
+    assert selection.sum() <= 2
+    assert np.all(selection.sum(axis=1) <= 1)
+
