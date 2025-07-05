@@ -8,7 +8,7 @@ ARG NON_ROOT_UID=1000
 ARG NON_ROOT_GID=1000
 ARG NON_ROOT_USER=app
 ARG HOME_DIR=/home/${NON_ROOT_USER}
-ARG REPO_DIR=/workspace
+ARG REPO_DIR=/direct-marketing-optimization
 
 # Create user and install dependencies
 RUN groupadd -g ${NON_ROOT_GID} ${NON_ROOT_USER} && \
@@ -29,10 +29,10 @@ WORKDIR ${HOME_DIR}
 COPY --from=ghcr.io/astral-sh/uv:0.6.6 /uv /uvx /bin
 
 # Copy files
-COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} ${REPO_DIR}/pyproject.toml ${HOME_DIR}/direct-marketing-optimization/pyproject.toml
-COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} ${REPO_DIR}/src ${HOME_DIR}/direct-marketing-optimization/src
+COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} pyproject.toml ${HOME_DIR}/direct-marketing-optimization/pyproject.toml
+COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} src ${HOME_DIR}/direct-marketing-optimization/src
 
-WORKDIR /${HOME_DIR}/direct-marketing-optimization
-COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} --exclude=src ${REPO_DIR} ${HOME_DIR}/direct-marketing-optimization
+WORKDIR /${HOME_DIR}
+COPY --chown=${NON_ROOT_USER}:${NON_ROOT_GID} --exclude=src . ${HOME_DIR}/direct-marketing-optimization
 
 # docker build -f docker/direct-marketing.Dockerfile .
