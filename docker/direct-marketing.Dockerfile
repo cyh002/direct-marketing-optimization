@@ -1,8 +1,18 @@
 # syntax=docker.io/docker/dockerfile:1.7-labs
 FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 
+# Define build arguments with sensible defaults so the image can be built
+# without providing them explicitly. These values mirror common container
+# conventions and can be overridden via `--build-arg` if required.
+ARG NON_ROOT_UID=1000
+ARG NON_ROOT_GID=1000
+ARG NON_ROOT_USER=app
+ARG HOME_DIR=/home/${NON_ROOT_USER}
+ARG REPO_DIR=/workspace
+
 # Create user and install dependencies
-RUN useradd -l -m -s /bin/bash -u ${NON_ROOT_UID} ${NON_ROOT_USER} && \
+RUN groupadd -g ${NON_ROOT_GID} ${NON_ROOT_USER} && \
+    useradd -l -m -s /bin/bash -u ${NON_ROOT_UID} -g ${NON_ROOT_GID} ${NON_ROOT_USER} && \
     apt update && \
     apt -y install curl git libenchant-2-2 && \
     apt clean
