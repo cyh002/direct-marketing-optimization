@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import List, Dict, Optional, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class FeaturesConfig(BaseModel):
     numeric: List[str]
@@ -31,6 +31,8 @@ class DataConfig(BaseModel):
 
 class TrainingConfig(BaseModel):
     """Configuration for model training."""
+
+    model_config = ConfigDict(protected_namespaces=("model_validate",))
 
     k_folds: int = 5
     random_seed: int = 42
