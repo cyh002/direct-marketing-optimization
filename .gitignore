@@ -1,5 +1,5 @@
-Singlife Data Scientist Case Study.pdf
 data/*
 .env
 .venv
 outputs/*
+__pycache__
