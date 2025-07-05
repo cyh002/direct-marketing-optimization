@@ -92,6 +92,12 @@ This project adheres to 5 key OOP principles:
 - **Comments**: Explain complex algorithms and business logic
 - **README**: High-level project overview and getting started guide
 
+### Always update dependencies
+- **Syncing dependencies**: You should run `uv sync` to sync dependencies. 
+- **Adding dependencies**: run `uv add dependencies` to add your dependencies
+- **Remove dependencies**: run `uv remove dependencies` to remove your dependencies 
+- **Running code**: run `uv run your_code.py` to run your code. 
+
 Example docstring format:
 ```python
 def process_data(input_df: pd.DataFrame, features: List[str]) -> pd.DataFrame:
