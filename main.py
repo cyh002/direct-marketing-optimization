@@ -1,6 +1,5 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
-import joblib
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
@@ -10,6 +9,7 @@ from sklearn.ensemble import RandomForestRegressor
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
 from src.trainer import PropensityTrainer, RevenueTrainer
+from src.model_loader import ModelLoader
 
 
 @hydra.main(config_path="conf/", config_name="config")
@@ -49,6 +49,7 @@ def main(cfg: DictConfig) -> None:
                 cv=cfg.training.k_folds,
                 output_dir=prop_out,
                 mlflow_config=mlflow_cfg,
+                run_name=f"propensity-{product}",
             )
             prop_trainer.fit(X, y_propensity)
 
@@ -59,12 +60,13 @@ def main(cfg: DictConfig) -> None:
                 cv=cfg.training.k_folds,
                 output_dir=rev_out,
                 mlflow_config=mlflow_cfg,
+                run_name=f"revenue-{product}",
             )
             rev_trainer.fit(X, y_revenue)
         else:
-            # Load existing models if training is disabled
-            joblib.load(os.path.join(prop_out, "LogisticRegression.joblib"))
-            joblib.load(os.path.join(rev_out, "RandomForestRegressor.joblib"))
+            loader = ModelLoader(config=config_dict)
+            loader.load_model("propensity", product)
+            loader.load_model("revenue", product)
 
     with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
         executor.map(train_for_product, cfg.products)

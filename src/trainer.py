@@ -39,6 +39,7 @@ class BaseTrainer(ABC):
         cv: int = 5,
         output_dir: str = "outputs/models",
         mlflow_config: Optional[MlflowConfig] = None,
+        run_name: Optional[str] = None,
     ) -> None:
         self.model = model
         self.preprocessor = preprocessor
@@ -50,13 +51,15 @@ class BaseTrainer(ABC):
         self.train_score: Optional[float] = None
         self.test_score: Optional[float] = None
         self.mlflow_config = mlflow_config
+        self.run_name = run_name
 
     def _mlflow_run(self):
         if not self.mlflow_config or not self.mlflow_config.enabled:
             return contextlib.nullcontext()
         mlflow.set_tracking_uri(self.mlflow_config.tracking_uri)
         mlflow.set_experiment(self.mlflow_config.experiment_name)
-        return mlflow.start_run(run_name=self.model.__class__.__name__)
+        run_name = self.run_name or self.model.__class__.__name__
+        return mlflow.start_run(run_name=run_name)
 
     @abstractmethod
     def fit(self, X: pd.DataFrame, y: pd.Series) -> ModelMetadata:
@@ -134,6 +137,7 @@ class PropensityTrainer(Trainer):
         cv: int = 5,
         output_dir: str = "outputs/models",
         mlflow_config: Optional[MlflowConfig] = None,
+        run_name: Optional[str] = None,
     ) -> None:
         super().__init__(
             model,
@@ -142,6 +146,7 @@ class PropensityTrainer(Trainer):
             cv=cv,
             output_dir=output_dir,
             mlflow_config=mlflow_config,
+            run_name=run_name,
         )
 
 
@@ -156,6 +161,7 @@ class RevenueTrainer(Trainer):
         cv: int = 5,
         output_dir: str = "outputs/models",
         mlflow_config: Optional[MlflowConfig] = None,
+        run_name: Optional[str] = None,
     ) -> None:
         super().__init__(
             model,
@@ -164,4 +170,5 @@ class RevenueTrainer(Trainer):
             cv=cv,
             output_dir=output_dir,
             mlflow_config=mlflow_config,
+            run_name=run_name,
         )

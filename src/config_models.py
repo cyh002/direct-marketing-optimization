@@ -37,6 +37,7 @@ class TrainingConfig(BaseModel):
     propensity_scoring: str = "f1"
     revenue_scoring: str = "neg_root_mean_squared_error"
     model_dump_path: str = "../outputs/models"
+    load_model_path: Optional[str] = None
     sample_fraction: float = 1.0
     train_enabled: bool = True
 

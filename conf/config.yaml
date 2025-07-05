@@ -89,6 +89,7 @@ training:
   propensity_scoring: "f1"
   revenue_scoring: "neg_root_mean_squared_error"
   model_dump_path: "../models"
+  load_model_path: "../models"
   sample_fraction: 1.0
   train_enabled: true
 
