@@ -29,7 +29,20 @@ class Preprocessor:
         test_size: float = 0.2,
         random_state: int = 42,
     ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, pd.DataFrame]]:
-        sales_dataset_key = next((k for k in datasets_with_sales if "Sales_Revenues" in k), None)
+        """Split datasets with sales data into train and test subsets.
+
+        Args:
+            datasets_with_sales: Datasets containing clients with recorded sales.
+            test_size: Fraction of clients to reserve for testing.
+            random_state: Deterministic seed for the split.
+
+        Returns:
+            Tuple of dictionaries containing ``*_train`` and ``*_test`` datasets.
+        """
+
+        sales_dataset_key = next(
+            (k for k in datasets_with_sales if "Sales_Revenues" in k), None
+        )
         if not sales_dataset_key:
             raise ValueError("No Sales_Revenues dataset found in datasets_with_sales")
 
@@ -56,6 +69,19 @@ class Preprocessor:
         join_key: str = "Client",
         datasets_to_merge: Optional[List[str]] = None,
     ) -> pd.DataFrame:
+        """Merge several datasets into a single dataframe using a join key.
+
+        Args:
+            datasets: Mapping of dataset names to dataframes.
+            base_dataset_key: Name of the main dataset to merge others into.
+            join_key: Column used to join datasets on.
+            datasets_to_merge: Specific datasets to merge. If ``None`` all
+                datasets except the base are merged.
+
+        Returns:
+            DataFrame containing the merged result.
+        """
+
         if base_dataset_key not in datasets:
             raise ValueError(f"Base dataset '{base_dataset_key}' not found in datasets")
 
@@ -81,6 +107,7 @@ class Preprocessor:
         dataset_name: str,
         join_key: str,
     ) -> pd.DataFrame:
+        """Merge a single dataset into ``merged_df`` using ``join_key``."""
         if join_key in df_to_merge.columns:
             before_shape = merged_df.shape
             merged_df = merged_df.merge(df_to_merge, on=join_key, how="left", suffixes=("", "_dup"))
@@ -96,6 +123,16 @@ class Preprocessor:
     def create_preprocessing_pipeline(
         self, numeric_features: List[str], categorical_features: List[str]
     ) -> ColumnTransformer:
+        """Create a scikit-learn preprocessing pipeline for the given features.
+
+        Args:
+            numeric_features: List of numeric feature names.
+            categorical_features: List of categorical feature names.
+
+        Returns:
+            A configured :class:`sklearn.compose.ColumnTransformer` instance.
+        """
+
         preprocess_config = self.config.preprocessing
         numeric_transformer = SimpleImputer(
             strategy=preprocess_config.numeric_imputer.strategy,
@@ -122,6 +159,7 @@ class Preprocessor:
     def analyze_data_quality(
         self, df: pd.DataFrame, show_columns: bool = True, max_missing_display: int = 20
     ) -> None:
+        """Log high level data quality statistics."""
         self.logger.info("Dataset shape: %s", df.shape)
         if show_columns:
             for i, col in enumerate(df.columns, 1):

@@ -1,8 +1,7 @@
 """Data loading utilities."""
 from __future__ import annotations
 
-import os
-from typing import Dict, Optional, List, Tuple
+from typing import Dict, List, Optional, Tuple
 
 import pandas as pd
 
@@ -19,7 +18,19 @@ class DataLoader:
         self.config = self.config_loader.get_config()
 
     def load_excel_datasets(self, excel_path: Optional[str] = None) -> Dict[str, pd.DataFrame]:
-        """Load all sheets from the Excel file."""
+        """Load all sheets from an Excel workbook.
+
+        Args:
+            excel_path: Optional path to the Excel file. When ``None`` the path
+                from the configuration is used.
+
+        Returns:
+            Mapping of sheet name to loaded :class:`pandas.DataFrame`.
+
+        Raises:
+            FileNotFoundError: If the provided file does not exist.
+            ValueError: If the file cannot be read.
+        """
         if excel_path is None:
             excel_path = self.config_loader.resolve_path(self.config.data.raw_excel_path)
         else:
@@ -29,17 +40,32 @@ class DataLoader:
 
         try:
             xls = pd.ExcelFile(excel_path, engine="openpyxl")
-            datasets = {sheet: pd.read_excel(xls, sheet_name=sheet, engine="openpyxl") for sheet in xls.sheet_names}
-        except FileNotFoundError as exc:
-            raise FileNotFoundError(f"Excel file not found at: {excel_path}") from exc
+            datasets = {
+                sheet: pd.read_excel(xls, sheet_name=sheet, engine="openpyxl")
+                for sheet in xls.sheet_names
+            }
+        except FileNotFoundError as exc:  # pragma: no cover - I/O errors
+            raise FileNotFoundError(
+                f"Excel file not found at: {excel_path}"
+            ) from exc
         except Exception as exc:  # pragma: no cover - general catch
-            raise Exception(f"Error loading Excel file: {exc}") from exc
+            raise ValueError(f"Error loading Excel file: {exc}") from exc
 
         datasets.pop("Description", None)
         return datasets
 
-    def load_configured_sheets(self, excel_path: Optional[str] = None) -> Dict[str, pd.DataFrame]:
-        """Return only the sheets specified in the configuration."""
+    def load_configured_sheets(
+        self, excel_path: Optional[str] = None
+    ) -> Dict[str, pd.DataFrame]:
+        """Load only the sheets defined in the configuration file.
+
+        Args:
+            excel_path: Optional path to override the configured Excel file.
+
+        Returns:
+            Mapping with sheet names as keys and :class:`pandas.DataFrame` as
+            values.
+        """
         all_datasets = self.load_excel_datasets(excel_path)
         configured_datasets: Dict[str, pd.DataFrame] = {}
         for sheet in self.config.data.sheets:
@@ -53,7 +79,16 @@ class DataLoader:
     def create_sales_data_split(
         self, datasets: Dict[str, pd.DataFrame], sales_key: str = "Sales_Revenues"
     ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, pd.DataFrame]]:
-        """Split datasets based on whether clients have sales data."""
+        """Split datasets based on whether clients have sales data.
+
+        Args:
+            datasets: Mapping of dataset names to dataframes.
+            sales_key: Name of the sales dataset containing the ``Client`` column.
+
+        Returns:
+            Two dictionaries with ``_with_sales`` and ``_without_sales`` suffixes
+            indicating which clients appear in the sales data.
+        """
         if sales_key not in datasets:
             raise ValueError(f"Sales dataset '{sales_key}' not found in datasets")
 
@@ -74,6 +109,7 @@ class DataLoader:
     def _log_split_summary(
         self, name: str, original_df: pd.DataFrame, with_sales_df: pd.DataFrame, without_sales_df: pd.DataFrame
     ) -> None:
+        """Log the row counts after splitting a dataset."""
         total_rows = len(original_df)
         self.logger.debug(
             "%s - total: %d, with_sales: %d, without_sales: %d",
@@ -101,6 +137,7 @@ class DataLoader:
 
 
 def load_datasets_from_config(config_path: str) -> Dict[str, pd.DataFrame]:
+    """Convenience wrapper to load datasets from a config path."""
     loader = DataLoader(config_path=config_path)
     return loader.load_configured_sheets()
 
@@ -108,6 +145,7 @@ def load_datasets_from_config(config_path: str) -> Dict[str, pd.DataFrame]:
 def load_and_create_sales_split(
     config_path: str,
 ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, pd.DataFrame], DataLoader]:
+    """Load datasets and create sales splits in one call."""
     loader = DataLoader(config_path=config_path)
     datasets = loader.load_configured_sheets()
     with_sales, without_sales = loader.create_sales_data_split(datasets)

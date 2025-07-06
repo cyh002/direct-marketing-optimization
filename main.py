@@ -17,11 +17,11 @@ from src.trainer import PropensityTrainer, RevenueTrainer
 from src.logging import get_logger, setup_logging
 from src.mlflow_utils import ensure_mlflow_server
 
-setup_logging()
-logger = get_logger(__name__)
-
 import numpy as np
 import pandas as pd
+
+setup_logging()
+logger = get_logger(__name__)
 
 def run_inference(
     cfg: DictConfig,
