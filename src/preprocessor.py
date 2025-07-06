@@ -26,19 +26,26 @@ class Preprocessor:
     def create_model_train_test_split(
         self,
         datasets_with_sales: Dict[str, pd.DataFrame],
-        test_size: float = 0.2,
-        random_state: int = 42,
+        test_size: Optional[float] = None,
+        random_state: Optional[int] = None,
     ) -> Tuple[Dict[str, pd.DataFrame], Dict[str, pd.DataFrame]]:
         """Split datasets with sales data into train and test subsets.
 
         Args:
             datasets_with_sales: Datasets containing clients with recorded sales.
-            test_size: Fraction of clients to reserve for testing.
-            random_state: Deterministic seed for the split.
+            test_size: Fraction of clients to reserve for testing. If ``None``
+                the value from the configuration is used.
+            random_state: Deterministic seed for the split. If ``None`` the
+                value from the configuration is used.
 
         Returns:
             Tuple of dictionaries containing ``*_train`` and ``*_test`` datasets.
         """
+
+        if test_size is None:
+            test_size = self.config.preprocessing.train_test_split.test_size
+        if random_state is None:
+            random_state = self.config.preprocessing.train_test_split.random_state
 
         sales_dataset_key = next(
             (k for k in datasets_with_sales if "Sales_Revenues" in k), None

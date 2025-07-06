@@ -25,12 +25,20 @@ class CategoricalImputerConfig(BaseModel):
 class OneHotConfig(BaseModel):
     handle_unknown: str = "ignore"
 
+
+class TrainTestSplitConfig(BaseModel):
+    """Configuration for train-test split."""
+
+    test_size: float = 0.2
+    random_state: int = 42
+
 class PreprocessingConfig(BaseModel):
     features: FeaturesConfig
     categorical: Optional[List[str]] = None
     numeric_imputer: NumericImputerConfig = NumericImputerConfig()
     categorical_imputer: CategoricalImputerConfig = CategoricalImputerConfig()
     onehot: OneHotConfig = OneHotConfig()
+    train_test_split: TrainTestSplitConfig = TrainTestSplitConfig()
 
 class DataConfig(BaseModel):
     raw_excel_path: str
