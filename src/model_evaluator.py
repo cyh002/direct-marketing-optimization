@@ -19,6 +19,7 @@ from .metrics import (
     RMSEMetric,
 )
 from .mlflow_utils import MlflowConfig
+import contextlib
 import mlflow
 
 
@@ -38,6 +39,14 @@ class BaseModelEvaluator:
         self.artifact_dir = artifact_dir
         self.logger = get_logger(self.__class__.__name__)
 
+    def _mlflow_run(self):
+        if not self.mlflow_config or not self.mlflow_config.enabled:
+            return contextlib.nullcontext()
+        mlflow.set_tracking_uri(self.mlflow_config.tracking_uri)
+        mlflow.set_experiment(self.mlflow_config.experiment_name)
+        run_name = self.run_name or self.__class__.__name__
+        return mlflow.start_run(run_name=run_name)
+
     def _resolve(self, metric: str | ModelMetric) -> ModelMetric:
         if isinstance(metric, ModelMetric):
             return metric
@@ -46,7 +55,7 @@ class BaseModelEvaluator:
 
     def _log(self, values: Dict[str, float], artifacts: Sequence[str] | None = None) -> None:
         if self.mlflow_config and self.mlflow_config.enabled:
-            with mlflow.start_run(run_name=self.run_name):
+            with self._mlflow_run():
                 mlflow.log_metrics(values)
                 if artifacts:
                     for art in artifacts:
