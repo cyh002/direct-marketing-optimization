@@ -2,8 +2,7 @@ import os
 
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestRegressor
+from hydra.utils import instantiate
 
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
@@ -42,15 +41,17 @@ def test_inference_workflow(tmp_path):
     os.makedirs(prop_dir, exist_ok=True)
     os.makedirs(rev_dir, exist_ok=True)
 
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg_models = compose(config_name="config")
     PropensityTrainer(
-        model=LogisticRegression(max_iter=100),
+        model=instantiate(cfg_models.propensity_model),
         preprocessor=pipeline,
         cv=2,
         output_dir=prop_dir,
     ).fit(X, y_prop)
 
     RevenueTrainer(
-        model=RandomForestRegressor(n_estimators=10),
+        model=instantiate(cfg_models.revenue_model),
         preprocessor=pipeline,
         cv=2,
         output_dir=rev_dir,

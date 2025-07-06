@@ -1,0 +1,6 @@
+# @package _global_
+revenue_model:
+  _target_: sklearn.linear_model.LinearRegression
+  fit_intercept: true
+  positive: false
+  n_jobs: -1

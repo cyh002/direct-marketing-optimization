@@ -1,6 +1,6 @@
 defaults:
-  - propensity_model: LogisticRegression
-  - revenue_model: RandomForest
+  - propensity_model: logistic_regression
+  - revenue_model: random_forest
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
 
