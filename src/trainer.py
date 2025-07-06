@@ -99,6 +99,19 @@ class Trainer(BaseTrainer):
                 scoring=self.scoring,
                 return_train_score=True,
             )
+            # Log per-fold metrics for detailed loss curves
+            for idx, (train_fold, test_fold) in enumerate(
+                zip(cv_results["train_score"], cv_results["test_score"])
+            ):
+                self.logger.debug(
+                    "Fold %d: train_score=%.4f, test_score=%.4f",
+                    idx,
+                    train_fold,
+                    test_fold,
+                )
+                if self.mlflow_config and self.mlflow_config.enabled:
+                    mlflow.log_metric("train_score_fold", train_fold, step=idx)
+                    mlflow.log_metric("test_score_fold", test_fold, step=idx)
             self.train_score = float(cv_results["train_score"].mean())
             self.test_score = float(cv_results["test_score"].mean())
             self.logger.info(
