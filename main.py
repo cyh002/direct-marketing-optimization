@@ -1,4 +1,7 @@
+"""Main workflow entry point and helpers."""
+
 import os
+
 from concurrent.futures import ThreadPoolExecutor
 
 import hydra
@@ -6,6 +9,7 @@ from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LogisticRegression
+from sklearn.compose import ColumnTransformer
 
 from src.dataloader import DataLoader
 from src.evaluator import Evaluator
@@ -14,6 +18,7 @@ from src.model_loader import ModelLoader
 from src.optimizer import Optimizer
 from src.preprocessor import Preprocessor
 from src.trainer import PropensityTrainer, RevenueTrainer
+from src.model_evaluator import ClassifierEvaluator, RegressorEvaluator
 from src.logging import get_logger, setup_logging
 from src.mlflow_utils import ensure_mlflow_server
 
@@ -22,6 +27,61 @@ import pandas as pd
 
 setup_logging()
 logger = get_logger(__name__)
+
+def prepare_datasets(
+    cfg: DictConfig,
+) -> tuple[dict, DataLoader, Preprocessor, pd.DataFrame, pd.DataFrame, dict, ColumnTransformer]:
+    """Load data and return training objects.
+
+    Args:
+        cfg: Hydra configuration.
+
+    Returns:
+        Tuple containing ``config_dict``, loader, preprocessor, merged training
+        dataframe, merged test dataframe, raw datasets and preprocessing
+        pipeline.
+    """
+
+    config_dict = OmegaConf.to_container(cfg, resolve=True)
+    loader = DataLoader(config=config_dict)
+    loader.config_loader.base_dir = os.path.join(get_original_cwd(), "conf")
+
+    logger.info("Loading datasets")
+    datasets = loader.load_configured_sheets()
+    with_sales, _ = loader.create_sales_data_split(datasets)
+    logger.info("Created sales data split")
+
+    preprocessor = Preprocessor(loader.get_config())
+    train_sets, test_sets = preprocessor.create_model_train_test_split(
+        with_sales,
+        test_size=cfg.preprocessing.train_test_split.test_size,
+        random_state=cfg.preprocessing.train_test_split.random_state,
+    )
+    logger.info("Created train/test split")
+
+    merged = preprocessor.merge_datasets(
+        train_sets, base_dataset_key="Sales_Revenues_train"
+    )
+    test_merged = preprocessor.merge_datasets(
+        test_sets, base_dataset_key="Sales_Revenues_test"
+    )
+    logger.info("Merged training datasets")
+
+    if cfg.training.sample_fraction < 1.0:
+        merged = merged.sample(
+            frac=cfg.training.sample_fraction, random_state=cfg.training.random_seed
+        )
+        logger.info(
+            "Subsampled training data to %.2f%%",
+            cfg.training.sample_fraction * 100,
+        )
+
+    logger.info("Training dataset shape: %s", merged.shape)
+    numeric, categorical = loader.get_feature_lists()
+    pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
+    logger.info("Preprocessing pipeline created")
+
+    return config_dict, loader, preprocessor, merged, test_merged, datasets, pipeline
 
 def run_inference(
     cfg: DictConfig,
@@ -114,41 +174,19 @@ def save_offers(
     return results_df
 
 
-@hydra.main(config_path="conf/", config_name="config")
-def main(cfg: DictConfig) -> None:
-    logger.info("Starting main workflow")
-    ensure_mlflow_server(cfg.mlflow, logger=logger)
-    config_dict = OmegaConf.to_container(cfg, resolve=True)
-    loader = DataLoader(config=config_dict)
-    loader.config_loader.base_dir = os.path.join(get_original_cwd(), "conf")
+def train_models(
+    cfg: DictConfig,
+    loader: DataLoader,
+    pipeline,
+    merged: pd.DataFrame,
+    test_merged: pd.DataFrame,
+    config_dict: dict,
+) -> None:
+    """Train propensity and revenue models for each product."""
 
-    logger.info("Loading datasets")
-    datasets = loader.load_configured_sheets()
-    with_sales, _ = loader.create_sales_data_split(datasets)
-    logger.info("Created sales data split")
-    preprocessor = Preprocessor(loader.get_config())
-    train_sets, _ = preprocessor.create_model_train_test_split(
-        with_sales, test_size=cfg.preprocessing.train_test_split.test_size, random_state=cfg.preprocessing.train_test_split.random_state
-    )
-    logger.info("Created train/test split")
-    merged = preprocessor.merge_datasets(
-        train_sets, base_dataset_key="Sales_Revenues_train"
-    )
-    logger.info("Merged training datasets")
-    if cfg.training.sample_fraction < 1.0:
-        merged = merged.sample(
-            frac=cfg.training.sample_fraction, random_state=cfg.training.random_seed
-        )
-        logger.info(
-            "Subsampled training data to %.2f%%",
-            cfg.training.sample_fraction * 100,
-        )
-    logger.info("Training dataset shape: %s", merged.shape)
     numeric, categorical = loader.get_feature_lists()
     X = merged[numeric + categorical]
-    pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
-    logger.info("Preprocessing pipeline created")
-
+    X_test = test_merged[numeric + categorical]
     mlflow_cfg = loader.config.mlflow
 
     def train_for_product(product: str) -> None:
@@ -184,14 +222,50 @@ def main(cfg: DictConfig) -> None:
             )
             rev_trainer.fit(X, y_revenue)
             logger.info("Finished training models for %s", product)
+
+            y_prop_test = test_merged[f"{cfg.targets.propensity}_{product}"]
+            y_rev_test = test_merged[f"{cfg.targets.revenue}_{product}"]
+
+            clf_eval = ClassifierEvaluator(
+                mlflow_config=mlflow_cfg,
+                run_name=f"propensity-{product}-inference",
+                artifact_dir=prop_out,
+            )
+            reg_eval = RegressorEvaluator(
+                n_features=X_test.shape[1],
+                mlflow_config=mlflow_cfg,
+                run_name=f"revenue-{product}-inference",
+            )
+            clf_eval.evaluate(prop_trainer.pipeline, X_test, y_prop_test)
+            reg_eval.evaluate(rev_trainer.pipeline, X_test, y_rev_test)
         else:
             logger.info("Loading pretrained models for %s", product)
             loader = ModelLoader(config=config_dict)
             loader.load_model("propensity", product)
             loader.load_model("revenue", product)
-    # ---------- Load and preprocess data ----------
+
     with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
         executor.map(train_for_product, cfg.products)
+
+
+
+@hydra.main(config_path="conf/", config_name="config")
+def main(cfg: DictConfig) -> None:
+    """Run the full training and optimization workflow."""
+    logger.info("Starting main workflow")
+    ensure_mlflow_server(cfg.mlflow, logger=logger)
+
+    (
+        config_dict,
+        loader,
+        preprocessor,
+        merged,
+        test_merged,
+        datasets,
+        pipeline,
+    ) = prepare_datasets(cfg)
+
+    train_models(cfg, loader, pipeline, merged, test_merged, config_dict)
 
     logger.info("Starting inference")
     prop_preds, rev_preds, client_index = run_inference(

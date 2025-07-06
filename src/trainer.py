@@ -99,8 +99,9 @@ class Trainer(BaseTrainer):
                 scoring=self.scoring,
                 return_train_score=True,
             )
-            self.train_score = float(cv_results["train_score"].mean())
-            self.test_score = float(cv_results["test_score"].mean())
+            sign = -1.0 if str(self.scoring).startswith("neg_") else 1.0
+            self.train_score = float(cv_results["train_score"].mean() * sign)
+            self.test_score = float(cv_results["test_score"].mean() * sign)
             self.logger.info(
                 "Cross validation completed: train_score=%.4f, test_score=%.4f",
                 self.train_score,
