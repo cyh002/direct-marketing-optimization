@@ -1,9 +1,9 @@
 import os
 
 from hydra import compose, initialize_config_dir
+from omegaconf import OmegaConf
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
-import yaml
 
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
@@ -15,10 +15,14 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
 
 
 def prepare_data():
+    """Return fitted preprocessing pipeline and sample data for CC product."""
     with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
-        compose(config_name="config")
-    config_file = os.path.join(CONFIG_PATH, "config.yaml")
-    loader = DataLoader(config_path=config_file)
+        cfg = compose(config_name="config")
+    cfg = OmegaConf.to_container(cfg, resolve=True)
+    cfg["data"]["raw_excel_path"] = os.path.join(
+        os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
+    )
+    loader = DataLoader(config=cfg)
     datasets = loader.load_configured_sheets()
     preprocessor = Preprocessor(loader.get_config())
     merged = preprocessor.merge_datasets(datasets, base_dataset_key="Sales_Revenues")
@@ -31,6 +35,7 @@ def prepare_data():
 
 
 def test_inference_workflow(tmp_path):
+    """Train models, run inference and validate prediction ranges."""
     pipeline, X, y_prop, y_rev = prepare_data()
     prop_dir = tmp_path / "propensity" / "CC"
     rev_dir = tmp_path / "revenue" / "CC"
@@ -51,8 +56,9 @@ def test_inference_workflow(tmp_path):
         output_dir=rev_dir,
     ).fit(X, y_rev)
 
-    with open(os.path.join(CONFIG_PATH, "config.yaml"), "r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg = compose(config_name="config")
+    cfg = OmegaConf.to_container(cfg, resolve=True)
 
     cfg["training"]["train_enabled"] = False
     cfg["training"]["load_model_path"] = str(tmp_path)
@@ -72,5 +78,8 @@ def test_inference_workflow(tmp_path):
     assert os.path.exists(rev_path)
     assert prop_preds.shape[0] == X.shape[0]
     assert rev_preds.shape[0] == X.shape[0]
+    assert (prop_preds > 0).all().all()
+    assert (prop_preds <= 1.0).all().all()
+    assert (rev_preds >= 0).all().all()
 
 

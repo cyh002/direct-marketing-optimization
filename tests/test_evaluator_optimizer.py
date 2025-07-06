@@ -7,10 +7,12 @@ from src.metrics import (
     AcceptanceRateMetric,
     ROIMetric,
 )
+import cvxpy as cp
 from src.optimizer import Optimizer
 
 
 def test_evaluator_metrics():
+    """Check that Evaluator computes all metrics correctly."""
     selection = np.array([[1, 0], [0, 1]])
     propensity = np.array([[0.5, 0.2], [0.1, 0.8]])
     revenue = np.array([[100, 50], [200, 150]])
@@ -34,7 +36,9 @@ def test_evaluator_metrics():
     assert results["roi"] == pytest.approx(expected_total / (2 * 2.0))
 
 
+@pytest.mark.skipif("ECOS_BB" not in cp.installed_solvers(), reason="ECOS_BB solver not available")
 def test_optimizer_simple():
+    """Optimizer should respect contact limit and one-off constraints."""
     rev = np.array([[20, 10], [30, 5], [25, 15]])
     opt = Optimizer(contact_limit=2)
     selection = opt.solve(rev)
