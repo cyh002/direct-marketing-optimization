@@ -11,7 +11,9 @@ services:
     networks:
       - dm-network
     command: >
-      bash -c "pip install mlflow>=3.1.1 && \
+      bash -c "apt-get update && \
+               apt-get install -y curl && \
+               pip install mlflow>=3.1.1 && \
                mlflow server --host 0.0.0.0 --port 5000 \
                --backend-store-uri file:///mlruns \
                --default-artifact-root file:///artifacts"
