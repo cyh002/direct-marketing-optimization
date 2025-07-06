@@ -18,7 +18,6 @@ from src.trainer import PropensityTrainer, RevenueTrainer
 import numpy as np
 import pandas as pd
 
-
 def run_inference(
     cfg: DictConfig,
     preprocessor: Preprocessor,
@@ -112,7 +111,7 @@ def main(cfg: DictConfig) -> None:
     with_sales, _ = loader.create_sales_data_split(datasets)
     preprocessor = Preprocessor(loader.get_config())
     train_sets, _ = preprocessor.create_model_train_test_split(
-        with_sales, test_size=0.2, random_state=cfg.training.random_seed
+        with_sales, test_size=cfg.preprocessing.train_test_split.test_size, random_state=cfg.preprocessing.train_test_split.random_state
     )
     merged = preprocessor.merge_datasets(train_sets, base_dataset_key="Sales_Revenues_train")
     if cfg.training.sample_fraction < 1.0:
@@ -157,7 +156,7 @@ def main(cfg: DictConfig) -> None:
             loader = ModelLoader(config=config_dict)
             loader.load_model("propensity", product)
             loader.load_model("revenue", product)
-
+    # ---------- Load and preprocess data ----------
     with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
         executor.map(train_for_product, cfg.products)
 

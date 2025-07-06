@@ -4,6 +4,8 @@ defaults:
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
 
+
+seed : 42
 data:
   raw_excel_path: "../data/raw/DataScientist_CaseStudy_Dataset.xlsx"
   sheets:
@@ -62,6 +64,9 @@ preprocessing:
     fill_value: missing
   onehot:
     handle_unknown: ignore
+  train_test_split:
+    test_size: 0.2
+    random_state: ${seed}
   save_preprocessed: true
   save_path: "../data/processed/preprocessed_data.csv"
 
@@ -91,7 +96,7 @@ inference:
 
 training:
   k_folds: 5
-  random_seed: 42
+  random_seed: ${seed}
   propensity_scoring: "f1"
   revenue_scoring: "neg_root_mean_squared_error"
   model_dump_path: "./models"
@@ -111,5 +116,5 @@ hydra:
     direction: maximize
     study_name: "direct-marketing-optimization"
     storage: null
-    n_trials: 20
+    n_trials: 1
     n_jobs: -1
