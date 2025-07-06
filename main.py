@@ -15,6 +15,7 @@ from src.optimizer import Optimizer
 from src.preprocessor import Preprocessor
 from src.trainer import PropensityTrainer, RevenueTrainer
 from src.logging import get_logger, setup_logging
+from src.mlflow_utils import ensure_mlflow_server
 
 setup_logging()
 logger = get_logger(__name__)
@@ -116,6 +117,7 @@ def save_offers(
 @hydra.main(config_path="conf/", config_name="config")
 def main(cfg: DictConfig) -> None:
     logger.info("Starting main workflow")
+    ensure_mlflow_server(cfg.mlflow, logger=logger)
     config_dict = OmegaConf.to_container(cfg, resolve=True)
     loader = DataLoader(config=config_dict)
     loader.config_loader.base_dir = os.path.join(get_original_cwd(), "conf")
