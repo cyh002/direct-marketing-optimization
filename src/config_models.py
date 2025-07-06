@@ -45,7 +45,7 @@ class TrainingConfig(BaseModel):
     random_seed: int = 42
     propensity_scoring: str = "f1"
     revenue_scoring: str = "neg_root_mean_squared_error"
-    model_dump_path: str = "./outputs/models"
+    model_dump_path: str = "../outputs/models"
     load_model_path: Optional[str] = None
     sample_fraction: float = 1.0
     train_enabled: bool = True
@@ -62,7 +62,7 @@ class InferenceConfig(BaseModel):
 
     model_config = ConfigDict(extra="ignore")
 
-    output_dir: str = "./data/inference"
+    output_dir: str = "../data/inference"
     propensity_file: str = "propensity_predictions.csv"
     revenue_file: str = "revenue_predictions.csv"
 
