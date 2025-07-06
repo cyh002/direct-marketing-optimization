@@ -1,11 +1,10 @@
 import os
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
-from sklearn.linear_model import LogisticRegression
+from hydra.utils import instantiate
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
 from src.trainer import PropensityTrainer, RevenueTrainer
-from sklearn.ensemble import RandomForestRegressor
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
 
@@ -35,7 +34,9 @@ def get_training_data():
 def test_propensity_trainer(tmp_path):
     """Ensure PropensityTrainer saves model and metadata."""
     pipeline, X, y_prop, _ = get_training_data()
-    model = LogisticRegression(max_iter=200)
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg = compose(config_name="config")
+    model = instantiate(cfg.propensity_model)
     trainer = PropensityTrainer(model=model, preprocessor=pipeline, cv=2, output_dir=tmp_path)
     metadata = trainer.fit(X, y_prop)
     model_file = tmp_path / f"{model.__class__.__name__}.joblib"
@@ -49,7 +50,9 @@ def test_propensity_trainer(tmp_path):
 def test_revenue_trainer(tmp_path):
     """Ensure RevenueTrainer saves model and metadata."""
     pipeline, X, _, y_rev = get_training_data()
-    model = RandomForestRegressor(n_estimators=10)
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg = compose(config_name="config")
+    model = instantiate(cfg.revenue_model)
     trainer = RevenueTrainer(model=model, preprocessor=pipeline, cv=2, output_dir=tmp_path)
     metadata = trainer.fit(X, y_rev)
     model_file = tmp_path / f"{model.__class__.__name__}.joblib"

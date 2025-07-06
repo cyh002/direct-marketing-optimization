@@ -99,9 +99,18 @@ class InferenceConfig(BaseModel):
     propensity_file: str = "propensity_predictions.csv"
     revenue_file: str = "revenue_predictions.csv"
 
+
+class ModelConfig(BaseModel):
+    """Configuration for an estimator."""
+
+    model_config = ConfigDict(extra="allow")
+    _target_: str
+
 class ConfigSchema(BaseModel):
     data: DataConfig
     preprocessing: PreprocessingConfig
+    propensity_model: ModelConfig
+    revenue_model: ModelConfig
     products: List[str]
     targets: Dict[str, str]
     training: TrainingConfig = TrainingConfig()

@@ -1,0 +1,16 @@
+# @package _global_
+propensity_model:
+  _target_: sklearn.linear_model.LogisticRegression
+  penalty: "l2"
+  tol: 0.0001
+  C: 1.0  # Will be optimized by Optuna
+  fit_intercept: true
+  solver: "liblinear"
+  l1_ratio: null
+  max_iter: 200
+
+hydra:
+  sweeper:
+    params:
+      propensity_model.C: range(0.01, 1.0, step=0.01)
+      propensity_model.penalty: choice("l1", "l2")

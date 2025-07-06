@@ -4,8 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LogisticRegression
+from hydra.utils import instantiate
 
 from src.dataloader import DataLoader
 from src.evaluator import Evaluator
@@ -164,7 +163,7 @@ def main(cfg: DictConfig) -> None:
         if cfg.training.train_enabled:
             logger.info("Training models for %s", product)
             prop_trainer = PropensityTrainer(
-                model=LogisticRegression(max_iter=200),
+                model=instantiate(cfg.propensity_model),
                 preprocessor=pipeline,
                 scoring=cfg.training.propensity_scoring,
                 cv=cfg.training.k_folds,
@@ -175,7 +174,7 @@ def main(cfg: DictConfig) -> None:
             prop_trainer.fit(X, y_propensity)
 
             rev_trainer = RevenueTrainer(
-                model=RandomForestRegressor(),
+                model=instantiate(cfg.revenue_model),
                 preprocessor=pipeline,
                 scoring=cfg.training.revenue_scoring,
                 cv=cfg.training.k_folds,
