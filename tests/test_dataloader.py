@@ -8,13 +8,18 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
 
 
 def get_loader():
+    """Instantiate DataLoader using resolved Hydra configuration."""
     with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
         cfg = compose(config_name="config")
-    config_file = os.path.join(CONFIG_PATH, "config.yaml")
-    return DataLoader(config_path=config_file)
+    cfg = OmegaConf.to_container(cfg, resolve=True)
+    cfg["data"]["raw_excel_path"] = os.path.join(
+        os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
+    )
+    return DataLoader(config=cfg)
 
 
 def test_load_configured_sheets():
+    """DataLoader should load all sheets specified in the config."""
     loader = get_loader()
     datasets = loader.load_configured_sheets()
     assert set(datasets.keys()) == {
@@ -28,6 +33,7 @@ def test_load_configured_sheets():
 
 
 def test_create_sales_data_split():
+    """Verify that clients are correctly split based on sales data."""
     loader = get_loader()
     datasets = loader.load_configured_sheets()
     with_sales, without_sales = loader.create_sales_data_split(datasets)
