@@ -13,7 +13,6 @@ from .metrics import (
     ROIMetric,
 )
 
-
 class Evaluator:
     """Compute evaluation metrics for optimized offers."""
 
