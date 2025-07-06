@@ -1,15 +1,105 @@
 import os
 from concurrent.futures import ThreadPoolExecutor
+
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
-from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LogisticRegression
 
 from src.dataloader import DataLoader
+from src.evaluator import Evaluator
+from src.inference import PropensityInference, RevenueInference
+from src.model_loader import ModelLoader
+from src.optimizer import Optimizer
 from src.preprocessor import Preprocessor
 from src.trainer import PropensityTrainer, RevenueTrainer
-from src.model_loader import ModelLoader
+
+import numpy as np
+import pandas as pd
+
+
+def run_inference(
+    cfg: DictConfig,
+    preprocessor: Preprocessor,
+    loader: DataLoader,
+    datasets: dict,
+    config_dict: dict,
+) -> tuple[pd.DataFrame, pd.DataFrame, pd.Index]:
+    """Run propensity and revenue inference."""
+    inference_df = preprocessor.merge_datasets(
+        datasets, base_dataset_key="Sales_Revenues"
+    )
+    numeric, categorical = loader.get_feature_lists()
+    X_inf = inference_df[numeric + categorical]
+    X_inf.index = inference_df["Client"]
+
+    prop_inf = PropensityInference(config=config_dict)
+    rev_inf = RevenueInference(config=config_dict)
+    prop_preds = prop_inf.predict(X_inf)
+    rev_preds = rev_inf.predict(X_inf)
+
+    prop_inf.save(prop_preds, cfg.inference.propensity_file)
+    rev_inf.save(rev_preds, cfg.inference.revenue_file)
+    return prop_preds, rev_preds, X_inf.index
+
+
+def run_optimization(
+    cfg: DictConfig, prop_preds: pd.DataFrame, rev_preds: pd.DataFrame
+) -> np.ndarray:
+    """Optimize the marketing offers."""
+    expected = prop_preds.values * rev_preds.values
+    optimizer = Optimizer(contact_limit=cfg.optimization.contact_limit)
+    return optimizer.solve(expected)
+
+
+def run_evaluation(
+    cfg: DictConfig,
+    selection: np.ndarray,
+    prop_preds: pd.DataFrame,
+    rev_preds: pd.DataFrame,
+    config_dict: dict,
+) -> dict:
+    """Evaluate optimized offers using configured metrics."""
+    evaluator = Evaluator(
+        config=config_dict, cost_per_contact=cfg.evaluation.cost_per_contact
+    )
+    results = evaluator.evaluate(selection, prop_preds.values, rev_preds.values)
+    for name, value in results.items():
+        print(f"{name}: {value:.4f}")
+    return results
+
+
+def save_offers(
+    cfg: DictConfig,
+    selection: np.ndarray,
+    prop_preds: pd.DataFrame,
+    rev_preds: pd.DataFrame,
+    client_index: pd.Index,
+) -> pd.DataFrame:
+    """Persist the optimized offer list to disk."""
+    selection_df = pd.DataFrame(selection, index=client_index, columns=cfg.products)
+    result_rows = []
+    for product in cfg.products:
+        mask = selection_df[product] == 1
+        if mask.any():
+            df_sel = pd.DataFrame(
+                {
+                    "Client": selection_df.index[mask],
+                    "product": product,
+                    "expected_revenue": rev_preds.loc[
+                        mask, f"expected_revenue_{product}"
+                    ].values,
+                    "probability": prop_preds.loc[mask, f"probability_{product}"].values,
+                }
+            )
+            result_rows.append(df_sel)
+
+    results_df = pd.concat(result_rows, ignore_index=True)
+    save_path = cfg.optimization.save_path
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    results_df.to_csv(save_path, index=False)
+    return results_df
 
 
 @hydra.main(config_path="conf/", config_name="config")
@@ -70,6 +160,20 @@ def main(cfg: DictConfig) -> None:
 
     with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
         executor.map(train_for_product, cfg.products)
+
+    # ---------- Inference ----------
+    prop_preds, rev_preds, client_index = run_inference(
+        cfg, preprocessor, loader, datasets, config_dict
+    )
+
+    # ---------- Optimization ----------
+    selection = run_optimization(cfg, prop_preds, rev_preds)
+
+    # ---------- Evaluation ----------
+    run_evaluation(cfg, selection, prop_preds, rev_preds, config_dict)
+
+    # ---------- Save optimized offers ----------
+    save_offers(cfg, selection, prop_preds, rev_preds, client_index)
 
 
 if __name__ == "__main__":

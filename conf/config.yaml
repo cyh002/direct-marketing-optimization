@@ -82,9 +82,12 @@ evaluation:
     - revenue_per_contact
     - acceptance_rate
     - roi
+  cost_per_contact: 1.0
 
 inference:
   output_dir: "../data/inference"
+  propensity_file: "propensity_predictions.csv"
+  revenue_file: "revenue_predictions.csv"
 
 training:
   k_folds: 5
