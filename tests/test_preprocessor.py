@@ -31,6 +31,23 @@ def test_model_train_test_split():
     assert len(test["Sales_Revenues_test"]) == 194
 
 
+def test_model_train_test_split_from_config():
+    """Split parameters should default to config values when not provided."""
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg = compose(config_name="config")
+    cfg = OmegaConf.to_container(cfg, resolve=True)
+    cfg["data"]["raw_excel_path"] = os.path.join(
+        os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
+    )
+    cfg["preprocessing"]["train_test_split"]["test_size"] = 0.25
+    loader = DataLoader(config=cfg)
+    datasets = loader.load_configured_sheets()
+    with_sales, _ = loader.create_sales_data_split(datasets)
+    preprocessor = Preprocessor(loader.get_config())
+    train, test = preprocessor.create_model_train_test_split(with_sales)
+    assert len(test["Sales_Revenues_test"]) == 243
+
+
 def test_merge_datasets():
     """Ensure datasets merge correctly on the Client key."""
     loader, preprocessor, with_sales = get_loader_and_preprocessor()
