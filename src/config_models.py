@@ -53,7 +53,11 @@ class MlflowConfig(BaseModel):
 class InferenceConfig(BaseModel):
     """Configuration for inference output."""
 
+    model_config = ConfigDict(extra="ignore")
+
     output_dir: str = "../data/inference"
+    propensity_file: str = "propensity_predictions.csv"
+    revenue_file: str = "revenue_predictions.csv"
 
 class ConfigSchema(BaseModel):
     data: DataConfig
