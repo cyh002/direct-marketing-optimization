@@ -1,4 +1,4 @@
-# @package _global_
+# @package revenue_model
 model:
   name: RandomForestRegressor
   n_estimators: 100

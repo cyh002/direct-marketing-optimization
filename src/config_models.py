@@ -29,6 +29,13 @@ class DataConfig(BaseModel):
     sheets: List[str]
 
 
+class ModelConfig(BaseModel):
+    """Definition of a model and its hyperparameters."""
+
+    model_config = ConfigDict(extra="allow")
+    model: Dict[str, Any]
+
+
 class TrainingConfig(BaseModel):
     """Configuration for model training."""
 
@@ -64,6 +71,8 @@ class ConfigSchema(BaseModel):
     preprocessing: PreprocessingConfig
     products: List[str]
     targets: Dict[str, str]
+    propensity_model: ModelConfig
+    revenue_model: ModelConfig
     training: TrainingConfig = TrainingConfig()
     mlflow: MlflowConfig = MlflowConfig()
     inference: InferenceConfig = InferenceConfig()

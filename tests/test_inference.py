@@ -1,6 +1,7 @@
 import os
 
 from hydra import compose, initialize_config_dir
+from omegaconf import OmegaConf
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
 import yaml
@@ -51,8 +52,9 @@ def test_inference_workflow(tmp_path):
         output_dir=rev_dir,
     ).fit(X, y_rev)
 
-    with open(os.path.join(CONFIG_PATH, "config.yaml"), "r", encoding="utf-8") as f:
-        cfg = yaml.safe_load(f)
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        cfg = compose(config_name="config")
+        cfg = OmegaConf.to_container(cfg, resolve=True)
 
     cfg["training"]["train_enabled"] = False
     cfg["training"]["load_model_path"] = str(tmp_path)

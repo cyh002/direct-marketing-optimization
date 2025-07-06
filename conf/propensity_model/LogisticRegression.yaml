@@ -1,4 +1,4 @@
-# @package _global_
+# @package propensity_model
 model:
   name: LogisticRegressionRegressor
   penalty: "l2"
