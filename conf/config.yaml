@@ -83,6 +83,9 @@ evaluation:
     - acceptance_rate
     - roi
 
+inference:
+  output_dir: "../data/inference"
+
 training:
   k_folds: 5
   random_seed: 42

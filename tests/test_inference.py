@@ -1,0 +1,76 @@
+import os
+
+from hydra import compose, initialize_config_dir
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestRegressor
+import yaml
+
+from src.dataloader import DataLoader
+from src.preprocessor import Preprocessor
+from src.trainer import PropensityTrainer, RevenueTrainer
+from src.inference import PropensityInference, RevenueInference
+
+
+CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
+
+
+def prepare_data():
+    with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
+        compose(config_name="config")
+    config_file = os.path.join(CONFIG_PATH, "config.yaml")
+    loader = DataLoader(config_path=config_file)
+    datasets = loader.load_configured_sheets()
+    preprocessor = Preprocessor(loader.get_config())
+    merged = preprocessor.merge_datasets(datasets, base_dataset_key="Sales_Revenues")
+    numeric, categorical = loader.get_feature_lists()
+    X = merged[numeric + categorical]
+    y_prop = merged["Sale_CC"]
+    y_rev = merged["Revenue_CC"]
+    pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
+    return pipeline, X, y_prop, y_rev
+
+
+def test_inference_workflow(tmp_path):
+    pipeline, X, y_prop, y_rev = prepare_data()
+    prop_dir = tmp_path / "propensity" / "CC"
+    rev_dir = tmp_path / "revenue" / "CC"
+    os.makedirs(prop_dir, exist_ok=True)
+    os.makedirs(rev_dir, exist_ok=True)
+
+    PropensityTrainer(
+        model=LogisticRegression(max_iter=100),
+        preprocessor=pipeline,
+        cv=2,
+        output_dir=prop_dir,
+    ).fit(X, y_prop)
+
+    RevenueTrainer(
+        model=RandomForestRegressor(n_estimators=10),
+        preprocessor=pipeline,
+        cv=2,
+        output_dir=rev_dir,
+    ).fit(X, y_rev)
+
+    with open(os.path.join(CONFIG_PATH, "config.yaml"), "r", encoding="utf-8") as f:
+        cfg = yaml.safe_load(f)
+
+    cfg["training"]["train_enabled"] = False
+    cfg["training"]["load_model_path"] = str(tmp_path)
+    cfg["inference"] = {"output_dir": str(tmp_path)}
+    cfg["products"] = ["CC"]
+
+    prop_inf = PropensityInference(config=cfg)
+    rev_inf = RevenueInference(config=cfg)
+
+    prop_preds = prop_inf.predict(X)
+    rev_preds = rev_inf.predict(X)
+
+    prop_path = prop_inf.save(prop_preds, "prop.csv")
+    rev_path = rev_inf.save(rev_preds, "rev.csv")
+
+    assert os.path.exists(prop_path)
+    assert os.path.exists(rev_path)
+    assert prop_preds.shape[0] == X.shape[0]
+    assert rev_preds.shape[0] == X.shape[0]
+
+

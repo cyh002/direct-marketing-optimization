@@ -49,6 +49,12 @@ class MlflowConfig(BaseModel):
     tracking_uri: str = "http://localhost:5000"
     experiment_name: str = "direct_marketing"
 
+
+class InferenceConfig(BaseModel):
+    """Configuration for inference output."""
+
+    output_dir: str = "../data/inference"
+
 class ConfigSchema(BaseModel):
     data: DataConfig
     preprocessing: PreprocessingConfig
@@ -56,6 +62,7 @@ class ConfigSchema(BaseModel):
     targets: Dict[str, str]
     training: TrainingConfig = TrainingConfig()
     mlflow: MlflowConfig = MlflowConfig()
+    inference: InferenceConfig = InferenceConfig()
 
     class Config:
         extra = "ignore"
