@@ -1,0 +1,14 @@
+# @package _global_
+model:
+  name: RandomForestClassifier
+  n_estimators: 100
+  max_depth: 10
+  min_samples_split: 2
+  min_samples_leaf: 1
+  bootstrap: true
+
+hydra:
+  sweeper:
+    params:
+        model.n_estimators: range(50, 300, step=50)
+        model.max_depth: range(5, 20, step=5)

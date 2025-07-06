@@ -1,0 +1,6 @@
+# @package _global_
+model:
+  name: LinearRegression
+  fit_intercept: true
+  positive: false
+  n_jobs: -1
