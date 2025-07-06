@@ -1,10 +1,18 @@
 from __future__ import annotations
 from typing import List, Dict, Optional, Any
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 
 class FeaturesConfig(BaseModel):
     numeric: List[str]
     categorical: Optional[List[str]] = None
+
+    @field_validator("numeric")
+    @classmethod
+    def numeric_not_empty(cls, v: List[str]) -> List[str]:
+        """Validate that numeric features list is not empty."""
+        if not v:
+            raise ValueError("numeric feature list cannot be empty")
+        return v
 
 class NumericImputerConfig(BaseModel):
     strategy: str = "constant"
@@ -28,6 +36,14 @@ class DataConfig(BaseModel):
     raw_excel_path: str
     sheets: List[str]
 
+    @field_validator("sheets")
+    @classmethod
+    def sheets_not_empty(cls, v: List[str]) -> List[str]:
+        """Ensure at least one sheet is specified."""
+        if not v:
+            raise ValueError("sheets list cannot be empty")
+        return v
+
 
 class TrainingConfig(BaseModel):
     """Configuration for model training."""
@@ -42,6 +58,22 @@ class TrainingConfig(BaseModel):
     load_model_path: Optional[str] = None
     sample_fraction: float = 1.0
     train_enabled: bool = True
+
+    @field_validator("k_folds")
+    @classmethod
+    def k_folds_positive(cls, v: int) -> int:
+        """k_folds must be a positive integer."""
+        if v <= 0:
+            raise ValueError("k_folds must be greater than 0")
+        return v
+
+    @field_validator("sample_fraction")
+    @classmethod
+    def sample_fraction_range(cls, v: float) -> float:
+        """Validate sample_fraction is between 0 and 1."""
+        if not 0 < v <= 1:
+            raise ValueError("sample_fraction must be in (0, 1]")
+        return v
 
 
 class MlflowConfig(BaseModel):
