@@ -36,6 +36,24 @@ graph TD
     D2 --> J
 ```
 
+## Diagram Step Descriptions
+
+The flowchart outlines the key components of the marketing pipeline. Each node plays a specific role:
+
+1. **Hydra Config** – manages paths, parameters and overall configuration.
+2. **DataLoader** – reads raw files and converts them into data frames.
+3. **Preprocessor** – cleans, merges and engineers features for modeling.
+4. **Propensity Trainer** – fits a model predicting purchase likelihood.
+5. **Revenue Trainer** – fits a model estimating expected revenue.
+6. **Propensity Model** – saved model used to score new customers.
+7. **Revenue Model** – saved model used to forecast revenue for each offer.
+8. **Inference** – generates propensity scores and revenue predictions.
+9. **Optimizer** – selects the best customer-product pairs under contact limits.
+10. **Evaluator** – computes metrics like AUC and expected revenue.
+11. **Offer List** – final list of recommended offers per customer.
+12. **MLflow Tracking** – records experiments, metrics and artifacts.
+
+
 ## Configuration
 
 Hydra configuration files live under `conf/`. The main file `conf/config.yaml` controls data paths, preprocessing settings, model training options and optimization parameters. Key fields include:
