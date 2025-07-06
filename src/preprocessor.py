@@ -10,6 +10,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 from .config_models import ConfigSchema
 from .logging import get_logger
+import pandas as pd
 
 
 class Preprocessor:
