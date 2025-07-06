@@ -4,7 +4,6 @@ defaults:
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
 
-
 seed : 42
 data:
   raw_excel_path: "../data/raw/DataScientist_CaseStudy_Dataset.xlsx"
@@ -67,8 +66,6 @@ preprocessing:
   train_test_split:
     test_size: 0.2
     random_state: ${seed}
-  save_preprocessed: true
-  save_path: "../data/processed/preprocessed_data.csv"
 
 optimization:
   contact_limit: 100
@@ -79,7 +76,7 @@ optimization:
   robust:
     enabled: false
     confidence_level: 0.95
-  save_path: "../data/results/optimized_offers.csv"
+  save_path: "./results/optimized_offers.csv"
 
 evaluation:
   metrics:
@@ -90,7 +87,7 @@ evaluation:
   cost_per_contact: 1.0
 
 inference:
-  output_dir: "../data/inference"
+  output_dir: "./inference"
   propensity_file: "propensity_predictions.csv"
   revenue_file: "revenue_predictions.csv"
 
