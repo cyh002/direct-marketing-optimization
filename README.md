@@ -17,6 +17,25 @@ This repository contains a case study project for optimizing direct marketing ca
 └── main.py               # Entry point for the workflow
 ```
 
+## Architecture Overview
+
+```mermaid
+graph TD
+    A[Hydra Config] --> B[DataLoader]
+    B --> C[Preprocessor]
+    C --> D1[Propensity Trainer]
+    C --> D2[Revenue Trainer]
+    D1 --> E1[Propensity Model]
+    D2 --> E2[Revenue Model]
+    E1 --> F[Inference]
+    E2 --> F
+    F --> G[Optimizer]
+    G --> H[Evaluator]
+    H --> I[Offer List]
+    D1 --> J[MLflow Tracking]
+    D2 --> J
+```
+
 ## Configuration
 
 Hydra configuration files live under `conf/`. The main file `conf/config.yaml` controls data paths, preprocessing settings, model training options and optimization parameters. Key fields include:
