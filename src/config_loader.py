@@ -4,6 +4,8 @@ import os
 from typing import Dict, Optional
 
 import yaml
+from hydra import compose, initialize_config_dir
+from omegaconf import OmegaConf
 
 from .config_models import ConfigSchema
 from .logging import get_logger
@@ -14,9 +16,12 @@ class ConfigLoader:
 
     def __init__(self, config_path: Optional[str] = None, config: Optional[Dict] = None) -> None:
         if config_path:
-            with open(config_path, "r", encoding="utf-8") as f:
-                config_dict = yaml.safe_load(f)
-            self.base_dir = os.path.dirname(os.path.abspath(config_path))
+            abs_path = os.path.abspath(config_path)
+            self.base_dir = os.path.dirname(abs_path)
+            config_name = os.path.splitext(os.path.basename(abs_path))[0]
+            with initialize_config_dir(version_base=None, config_dir=self.base_dir):
+                cfg = compose(config_name=config_name)
+            config_dict = OmegaConf.to_container(cfg, resolve=True)
         elif config:
             config_dict = config
             self.base_dir = os.getcwd()
