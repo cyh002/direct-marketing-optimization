@@ -100,6 +100,8 @@ training:
   load_model_path: "./models"
   sample_fraction: 1.0
   train_enabled: true
+  propensity_model: LogisticRegression
+  revenue_model: RandomForest
 
 mlflow:
   enabled: true

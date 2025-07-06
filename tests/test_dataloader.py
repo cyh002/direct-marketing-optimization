@@ -10,8 +10,10 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
 def get_loader():
     with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
         cfg = compose(config_name="config")
-    config_file = os.path.join(CONFIG_PATH, "config.yaml")
-    return DataLoader(config_path=config_file)
+    config = OmegaConf.to_container(cfg, resolve=True)
+    loader = DataLoader(config=config)
+    loader.config_loader.base_dir = CONFIG_PATH
+    return loader
 
 
 def test_load_configured_sheets():

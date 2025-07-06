@@ -4,8 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import hydra
 from hydra.utils import get_original_cwd
 from omegaconf import DictConfig, OmegaConf
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.linear_model import LogisticRegression
+from src.model_factory import ModelFactory
 
 from src.dataloader import DataLoader
 from src.evaluator import Evaluator
@@ -120,7 +119,8 @@ def main(cfg: DictConfig) -> None:
     ensure_mlflow_server(cfg.mlflow, logger=logger)
     config_dict = OmegaConf.to_container(cfg, resolve=True)
     loader = DataLoader(config=config_dict)
-    loader.config_loader.base_dir = os.path.join(get_original_cwd(), "conf")
+    config_base_dir = os.path.join(get_original_cwd(), "conf")
+    loader.config_loader.base_dir = config_base_dir
 
     logger.info("Loading datasets")
     datasets = loader.load_configured_sheets()
@@ -162,8 +162,13 @@ def main(cfg: DictConfig) -> None:
 
         if cfg.training.train_enabled:
             logger.info("Training models for %s", product)
+            prop_model = ModelFactory.from_config(
+                "propensity",
+                cfg.training.propensity_model,
+                config_base_dir,
+            )
             prop_trainer = PropensityTrainer(
-                model=LogisticRegression(max_iter=200),
+                model=prop_model,
                 preprocessor=pipeline,
                 scoring=cfg.training.propensity_scoring,
                 cv=cfg.training.k_folds,
@@ -173,8 +178,13 @@ def main(cfg: DictConfig) -> None:
             )
             prop_trainer.fit(X, y_propensity)
 
+            rev_model = ModelFactory.from_config(
+                "revenue",
+                cfg.training.revenue_model,
+                config_base_dir,
+            )
             rev_trainer = RevenueTrainer(
-                model=RandomForestRegressor(),
+                model=rev_model,
                 preprocessor=pipeline,
                 scoring=cfg.training.revenue_scoring,
                 cv=cfg.training.k_folds,

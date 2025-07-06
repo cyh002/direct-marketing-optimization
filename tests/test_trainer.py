@@ -1,5 +1,6 @@
 import os
 from hydra import compose, initialize_config_dir
+from omegaconf import OmegaConf
 from sklearn.linear_model import LogisticRegression
 from src.dataloader import DataLoader
 from src.preprocessor import Preprocessor
@@ -10,9 +11,10 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "conf")
 
 def get_training_data():
     with initialize_config_dir(version_base=None, config_dir=CONFIG_PATH):
-        compose(config_name="config")
-    config_file = os.path.join(CONFIG_PATH, "config.yaml")
-    loader = DataLoader(config_path=config_file)
+        cfg = compose(config_name="config")
+    config = OmegaConf.to_container(cfg, resolve=True)
+    loader = DataLoader(config=config)
+    loader.config_loader.base_dir = CONFIG_PATH
     datasets = loader.load_configured_sheets()
     with_sales, _ = loader.create_sales_data_split(datasets)
     preprocessor = Preprocessor(loader.get_config())

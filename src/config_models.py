@@ -42,6 +42,8 @@ class TrainingConfig(BaseModel):
     load_model_path: Optional[str] = None
     sample_fraction: float = 1.0
     train_enabled: bool = True
+    propensity_model: str = "LogisticRegression"
+    revenue_model: str = "RandomForest"
 
 
 class MlflowConfig(BaseModel):
