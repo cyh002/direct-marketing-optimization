@@ -2,6 +2,7 @@ import os
 
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
+import pandas as pd
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestRegressor
 
@@ -76,6 +77,12 @@ def test_inference_workflow(tmp_path):
 
     assert os.path.exists(prop_path)
     assert os.path.exists(rev_path)
+    prop_df = pd.read_csv(prop_path)
+    rev_df = pd.read_csv(rev_path)
+    assert "Client" in prop_df.columns
+    assert "Client" in rev_df.columns
+    assert prop_df.shape[0] == X.shape[0]
+    assert rev_df.shape[0] == X.shape[0]
     assert prop_preds.shape[0] == X.shape[0]
     assert rev_preds.shape[0] == X.shape[0]
     assert (prop_preds > 0).all().all()

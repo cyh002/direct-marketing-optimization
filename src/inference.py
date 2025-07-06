@@ -41,9 +41,9 @@ class BaseInference(ABC):
         return results
 
     def save(self, df: pd.DataFrame, filename: str) -> str:
-        """Persist predictions to CSV."""
+        """Persist predictions to CSV with client identifiers."""
         path = os.path.join(self.output_dir, filename)
-        df.to_csv(path, index=False)
+        df.to_csv(path, index_label="Client")
         self.logger.info("Saved inference results to %s", path)
         return path
 
