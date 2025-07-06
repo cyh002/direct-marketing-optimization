@@ -38,6 +38,7 @@ def run_inference(
     numeric, categorical = loader.get_feature_lists()
     X_inf = inference_df[numeric + categorical]
     X_inf.index = inference_df["Client"]
+    X_inf.index.name = "Client"
 
     logger.info("Running propensity and revenue inference")
     prop_inf = PropensityInference(config=config_dict)
