@@ -66,6 +66,8 @@ preprocessing:
   train_test_split:
     test_size: 0.2
     random_state: ${seed}
+  enable_save: true
+  save_path: "./preprocessed"
 
 optimization:
   contact_limit: 100
