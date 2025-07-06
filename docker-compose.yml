@@ -1,0 +1,47 @@
+version: '3'
+
+services:
+  mlflow:
+    image: python:3.12-slim
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlruns
+      - ./artifacts:/artifacts
+    networks:
+      - dm-network
+    command: >
+      bash -c "pip install mlflow>=3.1.1 && \
+               mlflow server --host 0.0.0.0 --port 5000 \
+               --backend-store-uri file:///mlruns \
+               --default-artifact-root file:///artifacts"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  direct-marketing:
+    build:
+      context: .
+      dockerfile: docker/direct-marketing.Dockerfile
+    depends_on:
+      mlflow:
+        condition: service_healthy
+    volumes:
+      - ./:/app
+    working_dir: /app
+    networks:
+      - dm-network
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    command: bash -c "uv sync && uv run main.py"
+
+networks:
+  dm-network:
+    driver: bridge
+
+volumes:
+  mlruns:
+  artifacts:
