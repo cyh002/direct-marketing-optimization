@@ -11,6 +11,7 @@ from sklearn.preprocessing import OneHotEncoder
 from .config_models import ConfigSchema
 from .logging import get_logger
 import pandas as pd
+import os
 
 
 class Preprocessor:
@@ -67,6 +68,10 @@ class Preprocessor:
                 base_name = name.replace("_with_sales", "")
                 datasets_train[f"{base_name}_train"] = train_df
                 datasets_test[f"{base_name}_test"] = test_df
+
+        if self.config.preprocessing.enable_save:
+            self._save_train_test(datasets_train, datasets_test, sales_dataset_key)
+
         return datasets_train, datasets_test
 
     def merge_datasets(
@@ -126,6 +131,27 @@ class Preprocessor:
         else:
             self.logger.warning("Join key '%s' not found in %s", join_key, dataset_name)
         return merged_df
+
+    def _save_train_test(
+        self,
+        train_sets: Dict[str, pd.DataFrame],
+        test_sets: Dict[str, pd.DataFrame],
+        sales_key_with_suffix: str,
+    ) -> None:
+        """Save merged train and test splits to CSV files."""
+        save_dir = self.config.preprocessing.save_path
+        os.makedirs(save_dir, exist_ok=True)
+
+        base = sales_key_with_suffix.replace("_with_sales", "")
+        train_base = f"{base}_train"
+        test_base = f"{base}_test"
+
+        train_df = self.merge_datasets(train_sets, base_dataset_key=train_base)
+        test_df = self.merge_datasets(test_sets, base_dataset_key=test_base)
+
+        train_df.to_csv(os.path.join(save_dir, "train.csv"), index=False)
+        test_df.to_csv(os.path.join(save_dir, "test.csv"), index=False)
+        self.logger.info("Saved train/test splits to %s", save_dir)
 
     def create_preprocessing_pipeline(
         self, numeric_features: List[str], categorical_features: List[str]
