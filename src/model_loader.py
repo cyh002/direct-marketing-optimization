@@ -18,6 +18,13 @@ class ModelLoader:
     """
 
     def __init__(self, config_path: Optional[str] = None, config: Optional[dict] = None) -> None:
+        """Create a loader for pretrained models.
+
+        Args:
+            config_path: Path to a configuration file.
+            config: Configuration dictionary.
+        """
+
         self.logger = get_logger(self.__class__.__name__)
         self.config_loader = ConfigLoader(config_path=config_path, config=config)
         self.config = self.config_loader.get_config()
@@ -32,6 +39,8 @@ class ModelLoader:
             self._validate_structure()
 
     def _validate_structure(self) -> None:
+        """Ensure the expected directory hierarchy exists."""
+
         base = Path(self.base_path)
         if not base.exists():
             raise FileNotFoundError(f"Model directory not found: {base}")

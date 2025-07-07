@@ -13,6 +13,13 @@ class DataLoader:
     """Load Excel datasets and provide business logic splits."""
 
     def __init__(self, config_path: Optional[str] = None, config: Optional[Dict] = None) -> None:
+        """Create a new ``DataLoader`` instance.
+
+        Args:
+            config_path: Optional path to a configuration file.
+            config: Already parsed configuration dictionary.
+        """
+
         self.logger = get_logger(self.__class__.__name__)
         self.config_loader = ConfigLoader(config_path=config_path, config=config)
         self.config = self.config_loader.get_config()
@@ -120,19 +127,28 @@ class DataLoader:
         )
 
     def get_feature_lists(self) -> Tuple[List[str], List[str]]:
+        """Return numeric and categorical feature lists from the config."""
+
         numeric_features = self.config.preprocessing.features.numeric
         categorical_features = (
-            self.config.preprocessing.features.categorical or self.config.preprocessing.categorical
+            self.config.preprocessing.features.categorical
+            or self.config.preprocessing.categorical
         )
         return numeric_features, categorical_features
 
     def get_products(self) -> List[str]:
+        """Return the list of configured products."""
+
         return self.config.products
 
     def get_targets(self) -> Dict[str, str]:
+        """Return the mapping of target column names."""
+
         return self.config.targets
 
     def get_config(self) -> Dict:
+        """Return the raw configuration dictionary."""
+
         return self.config.model_dump()
 
 

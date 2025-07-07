@@ -47,8 +47,11 @@ else:
         # Add timestamp if available
         try:
             timestamp = os.path.getmtime(choice)
-            st.caption(f"Last modified: {pd.to_datetime(timestamp, unit='s').strftime('%Y-%m-%d %H:%M:%S')}")
-        except:
+            st.caption(
+                f"Last modified: {pd.to_datetime(timestamp, unit='s').strftime('%Y-%m-%d %H:%M:%S')}"
+            )
+        except Exception:
+            # Ignore errors when timestamp cannot be retrieved
             pass
     
     # Create tabs for different model types

@@ -82,8 +82,9 @@ try:
     with open("conf/config.yaml", "r") as f:
         config = yaml.safe_load(f)
         cost_per_contact = config.get("evaluation", {}).get("cost_per_contact", 1.0)
-except:
-    cost_per_contact = 1.0  # Default if config not found
+except Exception:
+    # Default to 1.0 when the config cannot be loaded
+    cost_per_contact = 1.0
 
 # Extended metrics
 metrics = [

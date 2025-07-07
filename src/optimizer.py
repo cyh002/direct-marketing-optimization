@@ -3,22 +3,48 @@ from __future__ import annotations
 
 from typing import Dict, Optional
 
+from pydantic import BaseModel, field_validator
+
 import cvxpy as cp
 import numpy as np
+
+
+class OptimizerSettings(BaseModel):
+    """Parameters for :class:`Optimizer`."""
+
+    contact_limit: int
+    max_fraction_per_product: Optional[Dict[int, float]] = None
+    min_expected_revenue: float = 0.0
+
+    @field_validator("contact_limit")
+    @classmethod
+    def contact_limit_positive(cls, v: int) -> int:
+        """Ensure ``contact_limit`` is positive."""
+        if v <= 0:
+            raise ValueError("contact_limit must be greater than zero")
+        return v
 
 
 class Optimizer:
     """Solve the customer-product assignment problem using linear programming."""
 
-    def __init__(
-        self,
-        contact_limit: int,
-        max_fraction_per_product: Optional[Dict[int, float]] = None,
-        min_expected_revenue: float = 0.0,
-    ) -> None:
-        self.contact_limit = contact_limit
-        self.max_fraction_per_product = max_fraction_per_product or {}
-        self.min_expected_revenue = min_expected_revenue
+    def __init__(self, contact_limit: int, max_fraction_per_product: Optional[Dict[int, float]] = None, min_expected_revenue: float = 0.0) -> None:
+        """Create a new optimizer instance.
+
+        Args:
+            contact_limit: Maximum number of customers to contact.
+            max_fraction_per_product: Optional cap on the fraction of contacts per product index.
+            min_expected_revenue: Minimum expected revenue for any selected offer.
+        """
+
+        settings = OptimizerSettings(
+            contact_limit=contact_limit,
+            max_fraction_per_product=max_fraction_per_product,
+            min_expected_revenue=min_expected_revenue,
+        )
+        self.contact_limit = settings.contact_limit
+        self.max_fraction_per_product = settings.max_fraction_per_product or {}
+        self.min_expected_revenue = settings.min_expected_revenue
 
     def solve(self, expected_revenues: np.ndarray) -> np.ndarray:
         """Optimize which product to offer each customer.

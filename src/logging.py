@@ -10,6 +10,12 @@ _logger_initialized = False
 
 
 def setup_logging(path: str = DEFAULT_LOGGING_CONFIG) -> None:
+    """Configure Python logging.
+
+    Args:
+        path: Path to a YAML logging configuration file.
+    """
+
     if os.path.exists(path):
         with open(path, "r", encoding="utf-8") as f:
             config = yaml.safe_load(f)
@@ -19,6 +25,8 @@ def setup_logging(path: str = DEFAULT_LOGGING_CONFIG) -> None:
 
 
 def get_logger(name: str) -> logging.Logger:
+    """Return a configured logger instance."""
+
     global _logger_initialized
     if not _logger_initialized:
         setup_logging()
