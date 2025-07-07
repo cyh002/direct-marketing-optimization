@@ -20,6 +20,9 @@ if not run_dir:
 
 st.header("Revenue Models")
 _, rev = load_predictions(run_dir)
+if rev is None:
+    st.warning("Revenue predictions not found.")
+    st.stop()
 test_df = load_test_data(run_dir)
 model_root = os.path.join(run_dir, "models", "revenue")
 products = list_products(model_root)
@@ -33,11 +36,12 @@ for product in products:
         metrics = regression_metrics(y_true, y_pred)
         st.write(pd.DataFrame(metrics, index=[0]))
     model_dir = os.path.join(model_root, product)
-    joblibs = [f for f in os.listdir(model_dir) if f.endswith(".joblib")]
-    if joblibs:
-        fi = get_feature_importance(os.path.join(model_dir, joblibs[0]))
-        if fi is not None:
-            st.bar_chart(fi)
-    meta = load_metadata(model_dir)
-    if meta:
-        st.json(meta)
+    if os.path.exists(model_dir):
+        joblibs = [f for f in os.listdir(model_dir) if f.endswith(".joblib")]
+        if joblibs:
+            fi = get_feature_importance(os.path.join(model_dir, joblibs[0]))
+            if fi is not None:
+                st.bar_chart(fi)
+        meta = load_metadata(model_dir)
+        if meta:
+            st.json(meta)

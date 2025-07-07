@@ -22,6 +22,9 @@ if not run_dir:
 
 st.header("Propensity Models")
 prop, _ = load_predictions(run_dir)
+if prop is None:
+    st.warning("Propensity predictions not found.")
+    st.stop()
 test_df = load_test_data(run_dir)
 model_root = os.path.join(run_dir, "models", "propensity")
 products = list_products(model_root)
@@ -39,11 +42,12 @@ for product in products:
         )
         st.pyplot(cm.figure_)
     model_dir = os.path.join(model_root, product)
-    joblibs = [f for f in os.listdir(model_dir) if f.endswith(".joblib")]
-    if joblibs:
-        fi = get_feature_importance(os.path.join(model_dir, joblibs[0]))
-        if fi is not None:
-            st.bar_chart(fi)
-    meta = load_metadata(model_dir)
-    if meta:
-        st.json(meta)
+    if os.path.exists(model_dir):
+        joblibs = [f for f in os.listdir(model_dir) if f.endswith(".joblib")]
+        if joblibs:
+            fi = get_feature_importance(os.path.join(model_dir, joblibs[0]))
+            if fi is not None:
+                st.bar_chart(fi)
+        meta = load_metadata(model_dir)
+        if meta:
+            st.json(meta)

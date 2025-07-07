@@ -30,12 +30,17 @@ def list_run_directories(base_dir: str = BASE_OUTPUT_DIR) -> List[str]:
     return sorted(p for p in glob.glob(pattern) if os.path.isdir(p))
 
 
-def load_predictions(run_dir: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    """Load propensity and revenue predictions for a run."""
+def load_predictions(run_dir: str) -> Tuple[pd.DataFrame | None, pd.DataFrame | None]:
+    """Load propensity and revenue predictions for a run.
+
+    Missing files are ignored and ``None`` is returned instead of raising an
+    exception.
+    """
     prop_path = os.path.join(run_dir, "inference", "propensity_predictions.csv")
     rev_path = os.path.join(run_dir, "inference", "revenue_predictions.csv")
-    prop = pd.read_csv(prop_path, index_col="Client")
-    rev = pd.read_csv(rev_path, index_col="Client")
+
+    prop = pd.read_csv(prop_path, index_col="Client") if os.path.exists(prop_path) else None
+    rev = pd.read_csv(rev_path, index_col="Client") if os.path.exists(rev_path) else None
     return prop, rev
 
 
