@@ -53,7 +53,7 @@ services:
       - dm-network
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
-    command: bash -c "uv sync && streamlit run streamlit_app.py --server.address 0.0.0.0"
+    command: bash -c "uv sync && uv run streamlit run streamlit_app.py --server.address 0.0.0.0"
 
 networks:
   dm-network:
