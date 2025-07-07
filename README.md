@@ -110,6 +110,10 @@ Model-specific parameters are defined in `conf/propensity_model/` and `conf/reve
    ```bash
    uv run main.py
    ```
+4. **Launch the Streamlit dashboard**
+   ```bash
+   uv run streamlit run streamlit_app.py
+   ```
 
 ### Using Docker Compose
 
@@ -119,7 +123,9 @@ To start an MLflow server and run the application in containers, execute:
 sudo docker compose -f docker-compose.yml up
 ```
 
-This will build the application image and launch two services: `mlflow` for experiment tracking and `direct-marketing` which runs `uv run main.py`.
+This will build the application image and launch three services:
+`mlflow` for experiment tracking, `direct-marketing` which runs
+`uv run main.py`, and `streamlit` which exposes the dashboard on port 8501.
 
 ## Purpose
 
