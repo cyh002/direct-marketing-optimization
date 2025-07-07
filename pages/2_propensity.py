@@ -27,9 +27,7 @@ if prop is None:
     st.stop()
 test_df = load_test_data(run_dir)
 model_root = os.path.join(run_dir, "models", "propensity")
-print (f"Model root: {model_root}")
 products = list_products(model_root)
-print (f"Products: {products}")
 
 for product in products:
     st.subheader(product)
@@ -52,11 +50,17 @@ for product in products:
         st.pyplot(cm.figure_)
     model_dir = os.path.join(model_root, product)
     if os.path.exists(model_dir):
+        meta = load_metadata(model_dir)
+        if meta:
+            st.markdown(f"**Model:** {meta.get('model_name', 'Unknown')}")
+            st.write(
+                {
+                    "train_score": meta.get("train_score"),
+                    "test_score": meta.get("test_score"),
+                }
+            )
         joblibs = [f for f in os.listdir(model_dir) if f.endswith(".joblib")]
         if joblibs:
             fi = get_feature_importance(os.path.join(model_dir, joblibs[0]))
             if fi is not None:
-                st.bar_chart(fi)
-        meta = load_metadata(model_dir)
-        if meta:
-            st.json(meta)
+                st.bar_chart(fi.sort_values(ascending=False))

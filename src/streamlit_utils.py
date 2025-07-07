@@ -115,3 +115,47 @@ def regression_metrics(y_true: pd.Series, y_pred: pd.Series) -> Dict[str, float]
         "mse": mean_squared_error(y_true, y_pred),
         "r2": r2_score(y_true, y_pred),
     }
+
+
+def load_offers(run_dir: str) -> pd.DataFrame | None:
+    """Return optimized offers for a run if present."""
+    path = os.path.join(run_dir, "results", "optimized_offers.csv")
+    if os.path.exists(path):
+        return pd.read_csv(path)
+    return None
+
+
+def summarize_run(run_dir: str) -> Dict:
+    """Compute key metrics for a single run."""
+    offers = load_offers(run_dir)
+    total_rev = offers["expected_revenue"].sum() if offers is not None else float("nan")
+    mean_prob = offers["probability"].mean() if offers is not None else float("nan")
+
+    train_scores = []
+    test_scores = []
+    for model_type in ["propensity", "revenue"]:
+        root = os.path.join(run_dir, "models", model_type)
+        for prod in list_products(root):
+            meta = load_metadata(os.path.join(root, prod))
+            if meta:
+                train_scores.append(meta.get("train_score"))
+                test_scores.append(meta.get("test_score"))
+
+    best_train = max(train_scores) if train_scores else float("nan")
+    best_test = max(test_scores) if test_scores else float("nan")
+
+    return {
+        "run": os.path.basename(run_dir),
+        "path": run_dir,
+        "total_revenue": total_rev,
+        "mean_probability": mean_prob,
+        "best_train_score": best_train,
+        "best_test_score": best_test,
+    }
+
+
+def summarize_runs(base_dir: str = BASE_OUTPUT_DIR) -> pd.DataFrame:
+    """Aggregate summary statistics for all runs."""
+    runs = list_run_directories(base_dir)
+    rows = [summarize_run(r) for r in runs]
+    return pd.DataFrame(rows)
