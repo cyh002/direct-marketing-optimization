@@ -9,6 +9,6 @@ revenue_model:
 hydra:
   sweeper:
     params:
-      revenue_model.n_estimators: range(50, 200, step=50)
-      revenue_model.learning_rate: range(0.01, 0.2, step=0.05)
-      revenue_model.max_depth: range(3, 10, step=2)
+      revenue_model.n_estimators: range(50, 200, step=25)
+      revenue_model.learning_rate: range(0.01, 0.2, step=0.01)
+      revenue_model.max_depth: range(3, 10, step=1)
