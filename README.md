@@ -22,15 +22,15 @@ This repository contains a case study project for optimizing direct marketing ca
 This project leverages several modern Python libraries and tools:
 
 <div style="display: flex; justify-content: space-around; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
-  <img src="images/hydra.png" alt="Hydra" height="60" style="margin: 10px;" />
-  <img src="images/mlflow.webp" alt="MLflow" height="60" style="margin: 10px;" />
-  <img src="images/optuna.jpg" alt="Optuna" height="60" style="margin: 10px;" />
-  <img src="images/pydantic.jpg" alt="Pydantic" height="60" style="margin: 10px;" />
-  <img src="images/pytest.svg" alt="PyTest" height="60" style="margin: 10px;" />
-  <img src="images/sklearn.png" alt="Scikit-learn" height="60" style="margin: 10px;" />
-  <img src="images/streamlit.png" alt="Streamlit" height="60" style="margin: 10px;" />
-  <img src="images/ruff.png" alt="Ruff" height="60" style="margin: 10px;" />
-  <img src="images/docker.png" alt="Docker" height="60" style="margin: 10px;" />
+  <img src="images/hydra.png" alt="Hydra" height="30" style="margin: 2px;" />
+  <img src="images/mlflow.webp" alt="MLflow" height="30" style="margin: 2px;" />
+  <img src="images/optuna.jpg" alt="Optuna" height="30" style="margin: 2px;" />
+  <img src="images/pydantic.jpg" alt="Pydantic" height="30" style="margin: 2px;" />
+  <img src="images/pytest.svg" alt="PyTest" height="30" style="margin: 2px;" />
+  <img src="images/sklearn.png" alt="Scikit-learn" height="30" style="margin: 2px;" />
+  <img src="images/streamlit.png" alt="Streamlit" height="30" style="margin: 2px;" />
+  <img src="images/ruff.png" alt="Ruff" height="30" style="margin: 2px;" />
+  <img src="images/docker.png" alt="Docker" height="30" style="margin: 2px;" />
 </div>
 
 - **Hydra** – organizes configuration files and allows easy experiment
@@ -135,4 +135,4 @@ This setup mirrors a real-world scenario where a bank must allocate limited mark
 
 📧 **Email:** c-hi.yang@hotmail.sg
 
-💼 **LinkedIn:** [Your LinkedIn Profile](https://www.linkedin.com/in/christopher-chi-yang-hoo-570698bb/)
+💼 **LinkedIn:** [Link 🔗](https://www.linkedin.com/in/christopher-chi-yang-hoo-570698bb/)
