@@ -36,6 +36,24 @@ def test_evaluator_metrics():
     assert results["roi"] == pytest.approx(expected_total / (2 * 2.0))
 
 
+def test_evaluator_save(tmp_path):
+    """Evaluator should persist metrics to the specified CSV file."""
+    selection = np.array([[1]])
+    propensity = np.array([[0.5]])
+    revenue = np.array([[100]])
+    evaluator = Evaluator(
+        config=None,
+        metrics=[TotalRevenueMetric()],
+        cost_per_contact=1.0,
+    )
+    results = evaluator.evaluate(selection, propensity, revenue)
+    path = tmp_path / "metrics.csv"
+    saved_path = evaluator.save(results, str(path))
+    assert saved_path == str(path.resolve())
+    saved = np.genfromtxt(saved_path, delimiter=",", names=True, dtype=None, encoding="utf-8")
+    assert saved["total_revenue"] == pytest.approx(50.0)
+
+
 @pytest.mark.skipif("ECOS_BB" not in cp.installed_solvers(), reason="ECOS_BB solver not available")
 def test_optimizer_simple():
     """Optimizer should respect contact limit and one-off constraints."""

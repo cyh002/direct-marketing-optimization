@@ -68,7 +68,10 @@ def run_evaluation(
     rev_preds: pd.DataFrame,
     config_dict: dict,
 ) -> dict:
-    """Evaluate optimized offers using configured metrics."""
+    """Evaluate optimized offers using configured metrics.
+
+    Metrics are persisted when ``cfg.evaluation.save_path`` is provided.
+    """
     logger.info("Evaluating optimization results")
     evaluator = Evaluator(
         config=config_dict, cost_per_contact=cfg.evaluation.cost_per_contact
@@ -76,6 +79,8 @@ def run_evaluation(
     results = evaluator.evaluate(selection, prop_preds.values, rev_preds.values)
     for name, value in results.items():
         logger.info("%s: %.4f", name, value)
+    if cfg.evaluation.save_path:
+        evaluator.save(results, cfg.evaluation.save_path)
     return results
 
 

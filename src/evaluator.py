@@ -3,6 +3,9 @@ from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, Sequence
 
+import os
+import pandas as pd
+
 import numpy as np
 
 from .config_models import ConfigSchema
@@ -83,5 +86,21 @@ class Evaluator:
         for metric in self.metrics:
             results[metric.name] = metric.compute(selection, propensity, revenue)
         return results
+
+    def save(self, results: Dict[str, float], path: str) -> str:
+        """Persist evaluation metrics to a CSV file.
+
+        Args:
+            results: Mapping of metric names to computed values.
+            path: Destination CSV file path.
+
+        Returns:
+            The absolute path to the saved metrics file.
+        """
+        abs_path = os.path.abspath(path)
+        os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+        pd.DataFrame([results]).to_csv(abs_path, index=False)
+        self.logger.info("Saved evaluation metrics to %s", abs_path)
+        return abs_path
 
 
