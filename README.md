@@ -6,15 +6,33 @@ This repository contains a case study project for optimizing direct marketing ca
 
 ```
 .
+├── .dockerignore         # Docker ignore file
+├── .env_example          # Environment variables template
+├── .gitignore            # Git ignore file
+├── README.md             # Project documentation
+├── artifacts/            # Generated artifacts
 ├── conf/                 # Hydra configuration files
+│   ├── config.yaml       # Main configuration file
+│   ├── logging.yaml      # Logging configuration
+│   ├── propensity_model/ # Propensity model configurations
+│   └── revenue_model/    # Revenue model configurations
 ├── data/                 # Input data (raw/processed)
-├── docker/               # Dockerfile for the app
+├── docker/               # Docker configuration
+│   └── direct-marketing.Dockerfile
 ├── docker-compose.yml    # Compose file to run MLflow and the app
 ├── docs/                 # Additional documentation
-├── notebooks/            # Exploratory notebooks
+├── images/               # Documentation images
+├── main.py               # Entry point for the workflow
+├── mlruns/               # MLflow experiment tracking data
+├── notebooks/            # Exploratory Jupyter notebooks
+├── outputs/              # Generated output files
+├── pages/                # Streamlit app pages
+├── pyproject.toml        # Python project configuration
+├── ruff.toml             # Ruff linter configuration
 ├── src/                  # Source code package
+├── streamlit_app.py      # Main Streamlit application
 ├── tests/                # Unit tests
-└── main.py               # Entry point for the workflow
+└── uv.lock               # UV dependency lock file
 ```
 
 ## Tech Stack
@@ -45,7 +63,9 @@ This project leverages several modern Python libraries and tools:
 - **Ruff** – enforces code style and static analysis checks.
 - **Pytest** – runs the unit test suite.
 - **Pydantic** – validates configuration and data schemas.
-- **Plotly** – provides visualizations. 
+- **Plotly** – provides visualizations.
+- **CVXPY** – optimization library for mathematical programming.
+- **Streamlit** – creates interactive multi-page web applications. 
 
 
 ## Architecture Overview
@@ -115,17 +135,35 @@ Model-specific parameters are defined in `conf/propensity_model/` and `conf/reve
    uv run streamlit run streamlit_app.py
    ```
 
-### Using Docker Compose
+### Docker Compose
 
-To start an MLflow server and run the application in containers, execute:
+To start an MLflow server and run the application in containers:
 
 ```bash
 sudo docker compose -f docker-compose.yml up
 ```
 
-This will build the application image and launch three services:
-`mlflow` for experiment tracking, `direct-marketing` which runs
-`uv run main.py`, and `streamlit` which exposes the dashboard on port 8501.
+This will build the application image and launch multiple services:
+- `mlflow` for experiment tracking (accessible at http://localhost:5000)
+- `direct-marketing` which runs the main pipeline
+- `streamlit` which exposes the dashboard on port 8501
+
+## Streamlit Application
+
+The project includes a comprehensive Streamlit web application with multiple pages:
+
+- **Methodology** – explains the approach and methodology
+- **Summary** – provides an overview of results
+- **Filter** – allows filtering and exploration of data
+- **Propensity** – shows propensity model results and predictions
+- **Evaluation** – displays model evaluation metrics
+- **Client List** – presents the optimized client list for marketing
+- **Revenue** – shows revenue model predictions and analysis
+
+Launch the app with:
+```bash
+uv run streamlit run streamlit_app.py
+```
 
 ## Purpose
 
@@ -136,6 +174,43 @@ The goal is to maximize marketing revenue by:
 
 This setup mirrors a real-world scenario where a bank must allocate limited marketing resources to the most promising customers.
 
+## Key Features
+
+- **Multi-Product Modeling** – supports modeling for Credit Cards (CC), Consumer Loans (CL), and Mutual Funds (MF)
+- **Dual Model Architecture** – separate models for purchase propensity and expected revenue
+- **Hyperparameter Optimization** – uses Optuna for automated hyperparameter tuning
+- **Experiment Tracking** – MLflow integration for model versioning and comparison
+- **Interactive Dashboard** – comprehensive Streamlit web interface
+- **Optimization Engine** – mathematical optimization to maximize revenue under constraints
+- **Configurable Pipeline** – Hydra-based configuration management
+- **Comprehensive Testing** – full test suite with pytest
+- **Containerized Deployment** – Docker support for easy deployment
+
+
+## Dependencies
+
+The project uses modern Python tooling and libraries as defined in `pyproject.toml`:
+
+**Core ML/Data Libraries:**
+- `scikit-learn` – machine learning algorithms
+- `pandas` & `numpy` – data manipulation and analysis
+- `cvxpy` – convex optimization
+- `mlflow` – experiment tracking and model management
+
+**Configuration & Workflow:**
+- `hydra-core` – configuration management
+- `hydra-optuna-sweeper` – hyperparameter optimization
+- `pydantic` – data validation and settings management
+
+**Visualization & UI:**
+- `streamlit` – web application framework
+- `plotly` – interactive visualizations
+- `matplotlib` & `seaborn` – statistical plotting
+
+**Development & Testing:**
+- `pytest` – testing framework
+- `ruff` – fast Python linter and formatter
+- `jupyter` – notebook environment
 
 ## Author & Contact Information 👋
 
