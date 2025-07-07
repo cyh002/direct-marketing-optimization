@@ -17,6 +17,23 @@ This repository contains a case study project for optimizing direct marketing ca
 └── main.py               # Entry point for the workflow
 ```
 
+## Tech Stack
+
+The project relies on several tools and libraries to manage configuration, build
+models and run the application:
+
+- **Hydra** – organizes configuration files and allows easy experiment
+  management.
+- **Optuna** – performs hyperparameter search to find the best model settings.
+- **MLflow** – tracks experiments and stores models for later comparison.
+- **Scikit-learn** – provides machine learning algorithms used for training.
+- **Streamlit** – powers the simple web interface for exploring results.
+- **Docker** – containerizes the application and supporting services.
+- **uv** – handles dependency management and running Python scripts.
+- **Ruff** – enforces code style and static analysis checks.
+- **Pytest** – runs the unit test suite.
+- **Pydantic** – validates configuration and data schemas.
+
 ## Architecture Overview
 
 ```mermaid
