@@ -17,6 +17,35 @@ This repository contains a case study project for optimizing direct marketing ca
 └── main.py               # Entry point for the workflow
 ```
 
+## Tech Stack
+
+This project leverages several modern Python libraries and tools:
+
+<div style="display: flex; justify-content: space-around; flex-wrap: wrap; align-items: center; margin-bottom: 20px;">
+  <img src="images/hydra.png" alt="Hydra" height="60" style="margin: 10px;" />
+  <img src="images/mlflow.webp" alt="MLflow" height="60" style="margin: 10px;" />
+  <img src="images/optuna.jpg" alt="Optuna" height="60" style="margin: 10px;" />
+  <img src="images/pydantic.jpg" alt="Pydantic" height="60" style="margin: 10px;" />
+  <img src="images/pytest.svg" alt="PyTest" height="60" style="margin: 10px;" />
+  <img src="images/sklearn.png" alt="Scikit-learn" height="60" style="margin: 10px;" />
+  <img src="images/streamlit.png" alt="Streamlit" height="60" style="margin: 10px;" />
+  <img src="images/ruff.png" alt="Ruff" height="60" style="margin: 10px;" />
+  <img src="images/docker.png" alt="Docker" height="60" style="margin: 10px;" />
+</div>
+
+- **Hydra** – organizes configuration files and allows easy experiment
+  management.
+- **Optuna** – performs hyperparameter search to find the best model settings.
+- **MLflow** – tracks experiments and stores models for later comparison.
+- **Scikit-learn** – provides machine learning algorithms used for training.
+- **Streamlit** – powers the simple web interface for exploring results.
+- **Docker** – containerizes the application and supporting services.
+- **uv** – handles dependency management and running Python scripts.
+- **Ruff** – enforces code style and static analysis checks.
+- **Pytest** – runs the unit test suite.
+- **Pydantic** – validates configuration and data schemas.
+
+
 ## Architecture Overview
 
 ```mermaid
