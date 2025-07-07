@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 
 services:
   mlflow:
@@ -36,6 +36,24 @@ services:
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     command: bash -c "uv sync && uv run main.py"
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: docker/direct-marketing.Dockerfile
+    depends_on:
+      direct-marketing:
+        condition: service_completed_successfully
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./:/app
+    working_dir: /app
+    networks:
+      - dm-network
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    command: bash -c "uv sync && streamlit run streamlit_app.py --server.address 0.0.0.0"
 
 networks:
   dm-network:
