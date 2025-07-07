@@ -35,14 +35,14 @@ with tab1:
         """
     ### The Direct Marketing Problem
     
-    The bank faces a common business problem: **how to allocate limited marketing resources to maximize return on investment**.
+    The company faces a common business problem: **how to allocate limited marketing resources to maximize return on investment**.
     With a large customer base but limited capacity to make contact offers, we need to identify:
     
     1. Which customers are most likely to accept each product offer
     2. How much revenue each customer is likely to generate if they accept
     3. The optimal allocation of marketing efforts across customers and products
     
-    ### Our Solution: A Hybrid Approach
+    ### A Hybrid Approach
 
     Three-stage hybrid approach is proposed that combines:
 
