@@ -37,7 +37,8 @@ The dashboard then optimizes marketing campaigns by selecting the best customer-
 
 - **🐙 GitHub**: [Direct Marketing Optimization](https://github.com/cyh002/direct-marketing-optimization)
 - **📡 MLflow Server**: [http://localhost:5000](http://localhost:5000)
-- **📚 Documentation**: See the project README for detailed instructions
+- **📚 API Documentation**: [http://localhost:8080](http://localhost:8080)
+- **📖 Project README**: See the project README for detailed instructions
 
 ### 🛠️ Tech Stack
 

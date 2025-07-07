@@ -20,7 +20,7 @@ This repository contains a case study project for optimizing direct marketing ca
 ├── docker/               # Docker configuration
 │   └── direct-marketing.Dockerfile
 ├── docker-compose.yml    # Compose file to run MLflow and the app
-├── docs/                 # Additional documentation
+├── docs/                 # Sphinx documentation
 ├── images/               # Documentation images
 ├── main.py               # Entry point for the workflow
 ├── mlruns/               # MLflow experiment tracking data
@@ -147,6 +147,8 @@ This will build the application image and launch multiple services:
 - `mlflow` for experiment tracking (accessible at http://localhost:5000)
 - `direct-marketing` which runs the main pipeline
 - `streamlit` which exposes the dashboard on port 8501
+- `docs` which serves the API documentation at http://localhost:8080
+
 
 ## Streamlit Application
 
@@ -214,17 +216,30 @@ The project uses modern Python tooling and libraries as defined in `pyproject.to
 
 ## Documentation
 
-Project documentation is built with [Sphinx](https://www.sphinx-doc.org/). To
-generate the HTML docs run:
+Project documentation is built with [Sphinx](https://www.sphinx-doc.org/). 
+
+### Building Documentation Locally
+
+To generate the HTML docs locally:
 
 ```bash
 cd docs
 make html
-cd docs/build/html
+cd build/html
 python -m http.server 8000
 ```
 
-The output will be available in `docs/build/html/index.html`.
+The output will be available at http://localhost:8000.
+
+### Docker Documentation Service
+
+When using Docker Compose, the documentation is automatically built and served at http://localhost:8080:
+
+```bash
+sudo docker compose up docs
+```
+
+This provides comprehensive API documentation for all modules in the [`src/`](src/) package.
 
 ## Author & Contact Information 👋
 
