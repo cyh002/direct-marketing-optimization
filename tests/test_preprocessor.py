@@ -16,6 +16,7 @@ def get_loader_and_preprocessor():
     cfg["data"]["raw_excel_path"] = os.path.join(
         os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
     )
+    cfg["preprocessing"]["enable_save"] = False
     loader = DataLoader(config=cfg)
     datasets = loader.load_configured_sheets()
     with_sales, _ = loader.create_sales_data_split(datasets)
@@ -78,4 +79,19 @@ def test_preprocessing_no_missing(tmp_path):
     pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
     transformed = pipeline.fit_transform(merged[numeric + categorical])
     assert not pd.isnull(transformed).any()
+
+
+def test_train_test_split_saved(tmp_path):
+    """Train-test split should be saved when enabled in config."""
+    loader, preprocessor, with_sales = get_loader_and_preprocessor()
+    preprocessor.config.preprocessing.enable_save = True
+    preprocessor.config.preprocessing.save_path = str(tmp_path)
+    preprocessor.create_model_train_test_split(with_sales, test_size=0.2, random_state=42)
+    train_path = tmp_path / "train.csv"
+    test_path = tmp_path / "test.csv"
+    assert train_path.exists()
+    assert test_path.exists()
+    train_df = pd.read_csv(train_path)
+    test_df = pd.read_csv(test_path)
+    assert set(train_df.columns) == set(test_df.columns)
 

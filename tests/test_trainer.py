@@ -17,6 +17,7 @@ def get_training_data():
     cfg["data"]["raw_excel_path"] = os.path.join(
         os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
     )
+    cfg["preprocessing"]["enable_save"] = False
     loader = DataLoader(config=cfg)
     datasets = loader.load_configured_sheets()
     with_sales, _ = loader.create_sales_data_split(datasets)

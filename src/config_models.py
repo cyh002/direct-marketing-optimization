@@ -39,6 +39,8 @@ class PreprocessingConfig(BaseModel):
     categorical_imputer: CategoricalImputerConfig = CategoricalImputerConfig()
     onehot: OneHotConfig = OneHotConfig()
     train_test_split: TrainTestSplitConfig = TrainTestSplitConfig()
+    enable_save: bool = False
+    save_path: str = "./preprocessed"
 
 class DataConfig(BaseModel):
     raw_excel_path: str
