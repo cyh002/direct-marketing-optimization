@@ -154,7 +154,7 @@ Model-specific parameters are defined in `conf/propensity_model/` and `conf/reve
    ```
 
 ### Docker Compose
-
+![Docker Demo](images/how_to_start.gif)
 To start an MLflow server and run the application in containers:
 
 ```bash
@@ -169,7 +169,7 @@ This will build the application image and launch multiple services:
 
 
 ## Streamlit Application
-
+![Streamlit Application Demo](images/streamlit_app.gif)
 The project includes a comprehensive Streamlit web application with multiple pages:
 
 - **Methodology** – explains the approach and methodology
