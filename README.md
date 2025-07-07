@@ -31,6 +31,7 @@ This project leverages several modern Python libraries and tools:
   <img src="images/streamlit.png" alt="Streamlit" height="30" style="margin: 2px;" />
   <img src="images/ruff.png" alt="Ruff" height="30" style="margin: 2px;" />
   <img src="images/docker.png" alt="Docker" height="30" style="margin: 2px;" />
+  <img src="images/plotly.png" alt="Plotly" height="30" style="margin: 2px;" />
 </div>
 
 - **Hydra** – organizes configuration files and allows easy experiment
@@ -44,6 +45,7 @@ This project leverages several modern Python libraries and tools:
 - **Ruff** – enforces code style and static analysis checks.
 - **Pytest** – runs the unit test suite.
 - **Pydantic** – validates configuration and data schemas.
+- **Plotly** – provides visualizations. 
 
 
 ## Architecture Overview
