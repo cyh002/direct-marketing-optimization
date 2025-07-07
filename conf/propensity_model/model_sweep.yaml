@@ -1,0 +1,5 @@
+defaults:
+  - override /propensity_model:
+      - logistic_regression
+      - gradient_boosting
+      - random_forest
