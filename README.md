@@ -35,6 +35,21 @@ This repository contains a case study project for optimizing direct marketing ca
 └── uv.lock               # UV dependency lock file
 ```
 
+## Deliverables
+
+This project provides the following key deliverables:
+
+-   **Executive Summary**: A concise overview of the project's methodology, findings, and recommendations, located in [`docs/source/technical_summary.rst`](docs/source/technical_summary.rst).
+-   **Targeted Client List**: An optimized CSV file listing clients recommended for marketing contact is available at each run under [outputs/results/optimized_offers.csv](/outputs/sample/gbc-gbr/results/optimized_offers.csv)
+-   **Source Code**: A complete and modular codebase, including:
+    -   [`main.py`](main.py): The main entry point for the data processing and modeling workflow.
+    -   [`streamlit_app.py`](streamlit_app.py): An interactive dashboard for visualizing results and model performance.
+    -   [`src/`](src/): The core source code package containing all logic for data loading, preprocessing, training, and optimization.
+    -   [`docs/`](docs/): Source files for the Sphinx project documentation.
+-   **Machine Learning Models**: Implementations for several models, including Logistic Regression and Gradient Boosting, for both propensity and revenue prediction. The pipeline is designed to be easily extensible with new algorithms.
+
+Results are best explored interactively via the Streamlit application. Please see the "Running the Project" section for instructions.
+
 ## Tech Stack
 
 This project leverages several modern Python libraries and tools:
