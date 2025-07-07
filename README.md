@@ -50,6 +50,8 @@ This project leverages several modern Python libraries and tools:
   <img src="images/ruff.png" alt="Ruff" height="30" style="margin: 2px;" />
   <img src="images/docker.png" alt="Docker" height="30" style="margin: 2px;" />
   <img src="images/plotly.png" alt="Plotly" height="30" style="margin: 2px;" />
+  <img src="images/uv.png" alt="uv" height="30" style="margin: 2px;" />
+  <img src="images/sphinx.png" alt="sphinx" height="30" style="margin: 2px;" />
 </div>
 
 - **Hydra** – organizes configuration files and allows easy experiment
@@ -66,6 +68,7 @@ This project leverages several modern Python libraries and tools:
 - **Plotly** – provides visualizations.
 - **CVXPY** – optimization library for mathematical programming.
 - **Streamlit** – creates interactive multi-page web applications. 
+- **Sphinx** - creates documentation by importing code.
 
 
 ## Architecture Overview
