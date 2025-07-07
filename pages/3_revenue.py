@@ -31,8 +31,16 @@ for product in products:
     st.subheader(product)
     col_name = f"expected_revenue_{product}"
     if test_df is not None and f"Revenue_{product}" in test_df:
-        y_true = test_df[f"Revenue_{product}"].reindex(rev.index)
-        y_pred = rev[col_name]
+        # Merge dataframes on Client column
+        merged_df = pd.merge(
+            rev[['Client', col_name]],
+            test_df[['Client', f"Revenue_{product}"]],
+            on='Client',
+            how='inner'
+        )
+
+        y_true = merged_df[f"Revenue_{product}"]
+        y_pred = merged_df[col_name]
         metrics = regression_metrics(y_true, y_pred)
         st.write(pd.DataFrame(metrics, index=[0]))
     model_dir = os.path.join(model_root, product)

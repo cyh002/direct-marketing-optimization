@@ -32,16 +32,18 @@ if prop is None or rev is None:
 st.header("Evaluation")
 
 # Build matrices for Evaluator
-products = [c.replace("probability_", "") for c in prop.columns]
-prop_mat = prop[[f"probability_{p}" for p in products]].values
+# Fix: Only consider columns that start with "probability_" to extract product names
+probability_columns = [c for c in prop.columns if c.startswith("probability_")]
+products = [c.replace("probability_", "") for c in probability_columns]
+prop_mat = prop[probability_columns].values
 rev_mat = rev[[f"expected_revenue_{p}" for p in products]].values
 selection = np.zeros_like(prop_mat)
 
 for _, row in offers.iterrows():
     client = row["Client"]
-    product = row["Product"]
-    if client in prop.index and product in products:
-        i = prop.index.get_loc(client)
+    product = row["product"]
+    if client in prop["Client"].values and product in products:
+        i = prop[prop["Client"] == client].index[0]
         j = products.index(product)
         selection[i, j] = 1
 

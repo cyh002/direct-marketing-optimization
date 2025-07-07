@@ -27,14 +27,23 @@ if prop is None:
     st.stop()
 test_df = load_test_data(run_dir)
 model_root = os.path.join(run_dir, "models", "propensity")
+print (f"Model root: {model_root}")
 products = list_products(model_root)
+print (f"Products: {products}")
 
 for product in products:
     st.subheader(product)
     col_name = f"probability_{product}"
     if test_df is not None and f"Sale_{product}" in test_df:
-        y_true = test_df[f"Sale_{product}"].reindex(prop.index)
-        y_prob = prop[col_name]
+        # Merge dataframes on Client column instead of reindexing
+        merged_df = pd.merge(
+            prop[['Client', col_name]],
+            test_df[['Client', f"Sale_{product}"]],
+            on='Client',
+            how='inner'
+        )
+        y_true = merged_df[f"Sale_{product}"]
+        y_prob = merged_df[col_name]
         metrics = classification_metrics(y_true, y_prob)
         st.write(pd.DataFrame(metrics, index=[0]))
         cm = ConfusionMatrixDisplay.from_predictions(
