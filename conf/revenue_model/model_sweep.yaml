@@ -1,5 +1,0 @@
-defaults:
-  - override /revenue_model:
-      - linear_regression
-      - gradient_boosting
-      - random_forest

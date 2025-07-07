@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 import streamlit as st
-from utils import list_run_directories
+from src.streamlit_utils import list_run_directories
 
 st.header("Select Output Folder")
 run_dirs = list_run_directories()

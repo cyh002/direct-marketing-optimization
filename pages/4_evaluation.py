@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 import streamlit as st
-from utils import load_predictions
+from src.streamlit_utils import load_predictions
 from src.evaluator import Evaluator
 from src.metrics import (
     AcceptanceRateMetric,

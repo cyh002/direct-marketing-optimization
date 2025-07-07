@@ -4,7 +4,7 @@ from __future__ import annotations
 import os
 import streamlit as st
 import pandas as pd
-from utils import (
+from src.streamlit_utils import (
     load_predictions,
     load_test_data,
     list_products,
