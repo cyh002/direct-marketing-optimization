@@ -212,6 +212,18 @@ The project uses modern Python tooling and libraries as defined in `pyproject.to
 - `ruff` – fast Python linter and formatter
 - `jupyter` – notebook environment
 
+## Documentation
+
+Project documentation is built with [Sphinx](https://www.sphinx-doc.org/). To
+generate the HTML docs run:
+
+```bash
+cd docs
+make html
+```
+
+The output will be available in `docs/build/html/index.html`.
+
 ## Author & Contact Information 👋
 
 👤 **Author:** Christopher Hoo
