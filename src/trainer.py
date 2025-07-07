@@ -41,6 +41,8 @@ class BaseTrainer(ABC):
         mlflow_config: Optional[MlflowConfig] = None,
         run_name: Optional[str] = None,
     ) -> None:
+        """Initialize the trainer."""
+
         self.model = model
         self.preprocessor = preprocessor
         self.scoring = scoring
@@ -54,6 +56,8 @@ class BaseTrainer(ABC):
         self.run_name = run_name
 
     def _mlflow_run(self):
+        """Return a context manager for an MLflow run if enabled."""
+
         if not self.mlflow_config or not self.mlflow_config.enabled:
             return contextlib.nullcontext()
         mlflow.set_tracking_uri(self.mlflow_config.tracking_uri)

@@ -18,6 +18,12 @@ class Preprocessor:
     """Prepare data for modeling and feature engineering."""
 
     def __init__(self, config: Dict | ConfigSchema) -> None:
+        """Create a new ``Preprocessor``.
+
+        Args:
+            config: Configuration dictionary or :class:`ConfigSchema`.
+        """
+
         if isinstance(config, ConfigSchema):
             self.config = config
         else:

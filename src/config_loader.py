@@ -13,6 +13,13 @@ class ConfigLoader:
     """Load and validate project configuration."""
 
     def __init__(self, config_path: Optional[str] = None, config: Optional[Dict] = None) -> None:
+        """Initialize the loader from a path or dictionary.
+
+        Args:
+            config_path: Path to a YAML config file.
+            config: Configuration dictionary.
+        """
+
         if config_path:
             with open(config_path, "r", encoding="utf-8") as f:
                 config_dict = yaml.safe_load(f)

@@ -19,6 +19,13 @@ class BaseInference(ABC):
     output_prefix: str
 
     def __init__(self, config_path: Optional[str] = None, config: Optional[dict] = None) -> None:
+        """Instantiate the inference helper.
+
+        Args:
+            config_path: Optional configuration file path.
+            config: Optional configuration dictionary.
+        """
+
         self.logger = get_logger(self.__class__.__name__)
         self.config_loader = ConfigLoader(config_path=config_path, config=config)
         self.config = self.config_loader.get_config()
