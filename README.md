@@ -226,10 +226,10 @@ To generate the HTML docs locally:
 cd docs
 make html
 cd build/html
-python -m http.server 8000
+python -m http.server 8080
 ```
 
-The output will be available at http://localhost:8000.
+The output will be available at http://localhost:8080.
 
 ### Docker Documentation Service
 
