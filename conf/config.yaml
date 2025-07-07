@@ -1,4 +1,5 @@
 defaults:
+  - _self_
   - propensity_model: logistic_regression
   - revenue_model: random_forest
   - override hydra/sweeper: optuna
