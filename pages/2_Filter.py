@@ -118,6 +118,20 @@ else:
             # Display the DataFrame
             st.dataframe(prop_df, use_container_width=True)
 
+            # Display aggregated metrics
+            st.subheader("Aggregated Performance")
+            agg_col1, agg_col2 = st.columns(2)
+            avg_train_score = prop_df["Train Score"].mean()
+            avg_test_score = prop_df["Test Score"].mean()
+            agg_col1.metric(
+                "Average Train Score (F1)",
+                f"{avg_train_score:.4f}" if pd.notna(avg_train_score) else "N/A",
+            )
+            agg_col2.metric(
+                "Average Test Score (F1)",
+                f"{avg_test_score:.4f}" if pd.notna(avg_test_score) else "N/A",
+            )
+
             # Add a visualization if there are multiple products
             if len(propensity_models) > 1:
                 fig = px.bar(
@@ -144,6 +158,20 @@ else:
 
             # Display the DataFrame
             st.dataframe(rev_df, use_container_width=True)
+
+            # Display aggregated metrics
+            st.subheader("Aggregated Performance")
+            agg_col1, agg_col2 = st.columns(2)
+            avg_train_score = rev_df["Train Score"].mean()
+            avg_test_score = rev_df["Test Score"].mean()
+            agg_col1.metric(
+                "Average Train Score (RMSE)",
+                f"{avg_train_score:.4f}" if pd.notna(avg_train_score) else "N/A",
+            )
+            agg_col2.metric(
+                "Average Test Score (RMSE)",
+                f"{avg_test_score:.4f}" if pd.notna(avg_test_score) else "N/A",
+            )
 
             # Add a visualization if there are multiple products
             if len(revenue_models) > 1:
