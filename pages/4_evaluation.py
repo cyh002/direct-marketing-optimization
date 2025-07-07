@@ -25,6 +25,9 @@ if not os.path.exists(results_file):
 
 offers = pd.read_csv(results_file)
 prop, rev = load_predictions(run_dir)
+if prop is None or rev is None:
+    st.warning("Prediction files not found.")
+    st.stop()
 
 st.header("Evaluation")
 

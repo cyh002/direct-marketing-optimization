@@ -18,4 +18,5 @@ if not os.path.exists(results_file):
 offers = pd.read_csv(results_file)
 
 st.header("Optimized Client List")
-st.dataframe(offers)
+max_rows = st.number_input("Rows to display", min_value=1, max_value=len(offers), value=min(20, len(offers)))
+st.dataframe(offers.head(int(max_rows)))
