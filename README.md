@@ -129,3 +129,10 @@ The goal is to maximize marketing revenue by:
 This setup mirrors a real-world scenario where a bank must allocate limited marketing resources to the most promising customers.
 
 
+## Author & Contact Information 👋
+
+👤 **Author:** Christopher Hoo
+
+📧 **Email:** c-hi.yang@hotmail.sg
+
+💼 **LinkedIn:** [Your LinkedIn Profile](https://www.linkedin.com/in/christopher-chi-yang-hoo-570698bb/)
