@@ -1,0 +1,66 @@
+[2025-07-07 19:52:16,548][__main__][INFO] - Starting main workflow
+[2025-07-07 19:52:16,565][__main__][INFO] - Loading datasets
+[2025-07-07 19:52:16,565][DataLoader][INFO] - Loading Excel file from /home/c-hiy/direct-marketing-optimization/data/raw/DataScientist_CaseStudy_Dataset.xlsx
+[2025-07-07 19:52:16,868][__main__][INFO] - Created sales data split
+[2025-07-07 19:52:16,870][Preprocessor][INFO] - Model split: 775 train clients, 194 test clients
+[2025-07-07 19:52:16,888][Preprocessor][INFO] - Saved train/test splits to ./preprocessed
+[2025-07-07 19:52:16,888][__main__][INFO] - Created train/test split
+[2025-07-07 19:52:16,890][__main__][INFO] - Merged training datasets
+[2025-07-07 19:52:16,890][__main__][INFO] - Training dataset shape: (775, 36)
+[2025-07-07 19:52:16,891][__main__][INFO] - Preprocessing pipeline created
+[2025-07-07 19:52:16,891][__main__][INFO] - Processing product CL
+[2025-07-07 19:52:16,891][__main__][INFO] - Processing product MF
+[2025-07-07 19:52:16,891][__main__][INFO] - Processing product CC
+[2025-07-07 19:52:16,893][__main__][INFO] - Training models for CC
+[2025-07-07 19:52:16,893][__main__][INFO] - Training models for MF
+[2025-07-07 19:52:16,893][__main__][INFO] - Training models for CL
+[2025-07-07 19:52:17,141][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-07 19:52:17,146][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-07 19:52:17,146][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-07 19:52:19,473][PropensityTrainer][INFO] - Cross validation completed: train_score=0.7270, test_score=0.2339
+[2025-07-07 19:52:19,517][PropensityTrainer][INFO] - Cross validation completed: train_score=0.7226, test_score=0.0883
+[2025-07-07 19:52:19,549][PropensityTrainer][INFO] - Cross validation completed: train_score=0.8763, test_score=0.2324
+[2025-07-07 19:52:24,743][PropensityTrainer][INFO] - Model saved to ./models/propensity/CC/RandomForestClassifier.joblib
+[2025-07-07 19:52:24,744][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CC/RandomForestClassifier_metadata.json
+[2025-07-07 19:52:24,793][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-07 19:52:24,922][PropensityTrainer][INFO] - Model saved to ./models/propensity/CL/RandomForestClassifier.joblib
+[2025-07-07 19:52:24,923][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CL/RandomForestClassifier_metadata.json
+[2025-07-07 19:52:24,931][PropensityTrainer][INFO] - Model saved to ./models/propensity/MF/RandomForestClassifier.joblib
+[2025-07-07 19:52:24,932][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/MF/RandomForestClassifier_metadata.json
+[2025-07-07 19:52:24,958][RevenueTrainer][INFO] - Cross validation completed: train_score=-15.7566, test_score=-13.5752
+[2025-07-07 19:52:24,989][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-07 19:52:24,992][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-07 19:52:25,167][RevenueTrainer][INFO] - Cross validation completed: train_score=-6.6316, test_score=-6.6245
+[2025-07-07 19:52:25,170][RevenueTrainer][INFO] - Cross validation completed: train_score=-7.4593, test_score=-8.4067
+[2025-07-07 19:52:26,284][RevenueTrainer][INFO] - Model saved to ./models/revenue/CC/LinearRegression.joblib
+[2025-07-07 19:52:26,285][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CC/LinearRegression_metadata.json
+[2025-07-07 19:52:26,301][__main__][INFO] - Finished training models for CC
+[2025-07-07 19:52:26,517][RevenueTrainer][INFO] - Model saved to ./models/revenue/CL/LinearRegression.joblib
+[2025-07-07 19:52:26,517][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CL/LinearRegression_metadata.json
+[2025-07-07 19:52:26,532][__main__][INFO] - Finished training models for CL
+[2025-07-07 19:52:26,548][RevenueTrainer][INFO] - Model saved to ./models/revenue/MF/LinearRegression.joblib
+[2025-07-07 19:52:26,548][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/MF/LinearRegression_metadata.json
+[2025-07-07 19:52:26,554][__main__][INFO] - Finished training models for MF
+[2025-07-07 19:52:26,555][__main__][INFO] - Starting inference
+[2025-07-07 19:52:26,555][__main__][INFO] - Merging datasets for inference
+[2025-07-07 19:52:26,559][__main__][INFO] - Running propensity and revenue inference
+[2025-07-07 19:52:26,560][ModelLoader][INFO] - Loaded model from models/propensity/CL/RandomForestClassifier.joblib
+[2025-07-07 19:52:26,576][ModelLoader][INFO] - Loaded model from models/propensity/MF/RandomForestClassifier.joblib
+[2025-07-07 19:52:26,591][ModelLoader][INFO] - Loaded model from models/propensity/CC/RandomForestClassifier.joblib
+[2025-07-07 19:52:26,605][ModelLoader][INFO] - Loaded model from models/revenue/CL/LinearRegression.joblib
+[2025-07-07 19:52:26,607][ModelLoader][INFO] - Loaded model from models/revenue/MF/LinearRegression.joblib
+[2025-07-07 19:52:26,610][ModelLoader][INFO] - Loaded model from models/revenue/CC/LinearRegression.joblib
+[2025-07-07 19:52:26,612][__main__][INFO] - Saving inference results
+[2025-07-07 19:52:26,616][PropensityInference][INFO] - Saved inference results to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/19-52-16/inference/propensity_predictions.csv
+[2025-07-07 19:52:26,618][RevenueInference][INFO] - Saved inference results to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/19-52-16/inference/revenue_predictions.csv
+[2025-07-07 19:52:26,619][__main__][INFO] - Starting optimization
+[2025-07-07 19:52:26,619][__main__][INFO] - Running optimization
+[2025-07-07 19:52:26,641][__main__][INFO] - Starting evaluation
+[2025-07-07 19:52:26,641][__main__][INFO] - Evaluating optimization results
+[2025-07-07 19:52:26,642][__main__][INFO] - total_revenue: 629.6471
+[2025-07-07 19:52:26,642][__main__][INFO] - revenue_per_contact: 6.2965
+[2025-07-07 19:52:26,642][__main__][INFO] - acceptance_rate: 0.7182
+[2025-07-07 19:52:26,642][__main__][INFO] - roi: 6.2965
+[2025-07-07 19:52:26,643][Evaluator][INFO] - Saved evaluation metrics to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/19-52-16/results/evaluation_metrics.csv
+[2025-07-07 19:52:26,643][__main__][INFO] - Saving optimized offers
+[2025-07-07 19:52:26,643][__main__][INFO] - Saving optimized offers

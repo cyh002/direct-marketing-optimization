@@ -1,0 +1,12 @@
+{
+  "model_name": "LinearRegression",
+  "params": {
+    "copy_X": true,
+    "fit_intercept": true,
+    "n_jobs": -1,
+    "positive": false,
+    "tol": 1e-6
+  },
+  "train_score": -7.45932019774894,
+  "test_score": -8.406698630572787
+}

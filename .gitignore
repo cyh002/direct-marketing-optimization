@@ -1,7 +1,7 @@
 data/*
 .env
 .venv
-outputs/*
+!outputs/sample
 __pycache__
 mlruns/
 mlartifacts/
