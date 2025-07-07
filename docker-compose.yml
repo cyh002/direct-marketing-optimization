@@ -55,6 +55,19 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow:5000
     command: bash -c "uv sync && uv run streamlit run streamlit_app.py --server.address 0.0.0.0"
 
+  docs:
+    build:
+      context: .
+      dockerfile: docker/direct-marketing.Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./:/app
+    working_dir: /app
+    networks:
+      - dm-network
+    command: bash -c "uv sync && uv run sphinx-build -b html docs/source docs/build/html && cd docs/build/html && python -m http.server 8080"
+
 networks:
   dm-network:
     driver: bridge

@@ -220,6 +220,8 @@ generate the HTML docs run:
 ```bash
 cd docs
 make html
+cd docs/build/html
+python -m http.server 8000
 ```
 
 The output will be available in `docs/build/html/index.html`.
