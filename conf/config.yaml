@@ -88,6 +88,7 @@ evaluation:
     - acceptance_rate
     - roi
   cost_per_contact: 1.0
+  save_path: "./results/evaluation_metrics.csv"
 
 inference:
   output_dir: "./inference"
