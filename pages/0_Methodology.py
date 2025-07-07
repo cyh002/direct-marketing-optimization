@@ -12,7 +12,7 @@ st.title("📝 Methodology")
 st.markdown(
     """
 This page explains the methodology used to develop the optimized targeting strategy for direct marketing campaigns.
-We use a hybrid approach combining machine learning models with mathematical optimization to maximize expected revenue
+A hybrid approach is used to combine machine learning models with mathematical optimization to maximize expected revenue
 while respecting business constraints.
 """
 )
@@ -43,14 +43,12 @@ with tab1:
     3. The optimal allocation of marketing efforts across customers and products
     
     ### Our Solution: A Hybrid Approach
-    
-    We develop a three-stage hybrid approach that combines:
-    
+
+    Three-stage hybrid approach is proposed that combines:
+
     1. **Propensity Modeling**: Machine learning models that predict the probability of a customer purchasing each product
     2. **Revenue Modeling**: Regression models that predict the expected revenue from each customer if they purchase a product
     3. **Mathematical Optimization**: A constrained optimization problem that finds the best customer-product assignments
-    
-    This approach ensures we target the right customers with the right products, maximizing expected revenue while adhering to business constraints.
     """
     )
 
@@ -298,13 +296,12 @@ with tab2:
     ### 1. Data Preprocessing
     
     Before modeling, we perform several preprocessing steps:
-    
-    - Merging multiple data sources (demographic, product balance, transaction data)
+    - Merging multiple data sources (social-demographic, financial transactions, product holdings, sales and revenue data)
     - Handling missing values through imputation
-    - Feature engineering (e.g., ratios, aggregations)
     - Encoding categorical variables
     - Feature scaling for certain algorithms
     - Train/test splitting for model validation
+    - Training with CV folds to ensure robustness
     
     ### 2a. Propensity Modeling
     
@@ -319,9 +316,8 @@ with tab2:
     
     **Model Selection**: We evaluate several classification algorithms, including:
     - Logistic Regression
-    - Gradient Boosting (default)
+    - Gradient Boosting
     - Random Forest
-    - XGBoost
     
     **Default Evaluation Metric**: F1 score
     
@@ -329,8 +325,9 @@ with tab2:
     
     The F1 score was chosen because:
     - It balances precision and recall
-    - It handles class imbalance better than accuracy
+    - Data is highly imbalanced, with many non-purchases. It handles class imbalance better than accuracy
     - It's appropriate for binary classification problems
+    
     
     ### 2b. Revenue Modeling
     
@@ -339,7 +336,7 @@ with tab2:
     $$Revenue_{i,j} | (Sale_{i,j} = 1)$$
     
     **Model Selection**: We evaluate several regression algorithms, including:
-    - Linear Regression (default)
+    - Linear Regression
     - Gradient Boosting Regressor
     - Random Forest Regressor
     
@@ -566,19 +563,11 @@ In practice, the cost of making contact offers may vary by product or channel. T
 
 ### Alternative Formulations
 
-While we use a binary integer programming approach, other formulations are possible:
+While a binary integer programming approach is used, other formulations are possible:
 
 - Multi-objective optimization to balance revenue and customer satisfaction
 - Stochastic optimization to account for uncertainty in predictions
-- Combinatorial optimization approaches like genetic algorithms
+- Multi-Armed Bandit (MAB) framework to dynamically learn and adapt the targeting strategy over time by balancing exploration (testing new offers) and exploitation (using the best-performing offers).
 
-### Continuous Improvement
-
-The system is designed for continuous improvement:
-
-1. New data is collected from campaign results
-2. Models are retrained with the expanded dataset
-3. Optimization parameters are adjusted based on actual performance
-4. The cycle repeats, improving targeting over time
 """
 )
