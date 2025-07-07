@@ -50,11 +50,15 @@ def test_evaluator_save(tmp_path):
     path = tmp_path / "metrics.csv"
     saved_path = evaluator.save(results, str(path))
     assert saved_path == str(path.resolve())
-    saved = np.genfromtxt(saved_path, delimiter=",", names=True, dtype=None, encoding="utf-8")
+    saved = np.genfromtxt(
+        saved_path, delimiter=",", names=True, dtype=None, encoding="utf-8"
+    )
     assert saved["total_revenue"] == pytest.approx(50.0)
 
 
-@pytest.mark.skipif("ECOS_BB" not in cp.installed_solvers(), reason="ECOS_BB solver not available")
+@pytest.mark.skipif(
+    "ECOS_BB" not in cp.installed_solvers(), reason="ECOS_BB solver not available"
+)
 def test_optimizer_simple():
     """Optimizer should respect contact limit and one-off constraints."""
     rev = np.array([[20, 10], [30, 5], [25, 15]])
@@ -63,4 +67,3 @@ def test_optimizer_simple():
     assert selection.shape == rev.shape
     assert selection.sum() <= 2
     assert np.all(selection.sum(axis=1) <= 1)
-

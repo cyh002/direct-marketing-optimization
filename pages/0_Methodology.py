@@ -1,36 +1,38 @@
 """Methodology explanation page."""
+
 from __future__ import annotations
 
 import streamlit as st
-import numpy as np
-import pandas as pd
-import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 
 st.set_page_config(layout="wide")
 
 st.title("📝 Methodology")
 
-st.markdown("""
+st.markdown(
+    """
 This page explains the methodology used to develop the optimized targeting strategy for direct marketing campaigns.
 We use a hybrid approach combining machine learning models with mathematical optimization to maximize expected revenue
 while respecting business constraints.
-""")
+"""
+)
 
 # Create tabs for different sections of the methodology
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
-    "Overview", 
-    "Modeling Approach", 
-    "Optimization Formulation",
-    "Evaluation Metrics",
-    "Implementation Details"
-])
+tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    [
+        "Overview",
+        "Modeling Approach",
+        "Optimization Formulation",
+        "Evaluation Metrics",
+        "Implementation Details",
+    ]
+)
 
 with tab1:
     st.header("Hybrid Approach Overview")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     ### The Direct Marketing Problem
     
     The bank faces a common business problem: **how to allocate limited marketing resources to maximize return on investment**.
@@ -49,108 +51,177 @@ with tab1:
     3. **Mathematical Optimization**: A constrained optimization problem that finds the best customer-product assignments
     
     This approach ensures we target the right customers with the right products, maximizing expected revenue while adhering to business constraints.
-    """)
-    
+    """
+    )
+
     # Create a visual diagram of the process flow
     st.subheader("Methodology Flow")
-    
+
     col1, col2, col3 = st.columns([1, 2, 1])
-    
+
     with col2:
         fig = go.Figure()
-        
+
         # Add steps as shapes
         shapes = [
             # Data preprocessing box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.05, y0=0.85, x1=0.95, y1=1.0,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.05,
+                y0=0.85,
+                x1=0.95,
+                y1=1.0,
                 line=dict(color="RoyalBlue", width=2),
-                fillcolor="lightblue", opacity=0.5
+                fillcolor="lightblue",
+                opacity=0.5,
             ),
             # Propensity model box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.05, y0=0.65, x1=0.45, y1=0.8,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.05,
+                y0=0.65,
+                x1=0.45,
+                y1=0.8,
                 line=dict(color="green", width=2),
-                fillcolor="lightgreen", opacity=0.5
+                fillcolor="lightgreen",
+                opacity=0.5,
             ),
             # Revenue model box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.55, y0=0.65, x1=0.95, y1=0.8,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.55,
+                y0=0.65,
+                x1=0.95,
+                y1=0.8,
                 line=dict(color="orange", width=2),
-                fillcolor="lightsalmon", opacity=0.5
+                fillcolor="lightsalmon",
+                opacity=0.5,
             ),
             # Expected value box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.05, y0=0.45, x1=0.95, y1=0.6,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.05,
+                y0=0.45,
+                x1=0.95,
+                y1=0.6,
                 line=dict(color="purple", width=2),
-                fillcolor="lavender", opacity=0.5
+                fillcolor="lavender",
+                opacity=0.5,
             ),
             # Optimization box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.05, y0=0.25, x1=0.95, y1=0.4,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.05,
+                y0=0.25,
+                x1=0.95,
+                y1=0.4,
                 line=dict(color="crimson", width=2),
-                fillcolor="mistyrose", opacity=0.5
+                fillcolor="mistyrose",
+                opacity=0.5,
             ),
             # Optimized list box
             dict(
-                type="rect", xref="paper", yref="paper",
-                x0=0.05, y0=0.05, x1=0.95, y1=0.2,
+                type="rect",
+                xref="paper",
+                yref="paper",
+                x0=0.05,
+                y0=0.05,
+                x1=0.95,
+                y1=0.2,
                 line=dict(color="goldenrod", width=2),
-                fillcolor="lightyellow", opacity=0.5
-            )
+                fillcolor="lightyellow",
+                opacity=0.5,
+            ),
         ]
-        
+
         # Add arrows connecting boxes
-        shapes.extend([
-            # Arrow from preprocessing to propensity
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.25, y0=0.85, x1=0.25, y1=0.8,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            ),
-            # Arrow from preprocessing to revenue
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.75, y0=0.85, x1=0.75, y1=0.8,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            ),
-            # Arrow from propensity to expected value
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.25, y0=0.65, x1=0.25, y1=0.6,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            ),
-            # Arrow from revenue to expected value
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.75, y0=0.65, x1=0.75, y1=0.6,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            ),
-            # Arrow from expected value to optimization
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.5, y0=0.45, x1=0.5, y1=0.4,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            ),
-            # Arrow from optimization to optimized list
-            dict(
-                type="line", xref="paper", yref="paper",
-                x0=0.5, y0=0.25, x1=0.5, y1=0.2,
-                line=dict(color="gray", width=2, dash="solid"),
-                layer="below"
-            )
-        ])
-        
+        shapes.extend(
+            [
+                # Arrow from preprocessing to propensity
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.25,
+                    y0=0.85,
+                    x1=0.25,
+                    y1=0.8,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+                # Arrow from preprocessing to revenue
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.75,
+                    y0=0.85,
+                    x1=0.75,
+                    y1=0.8,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+                # Arrow from propensity to expected value
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.25,
+                    y0=0.65,
+                    x1=0.25,
+                    y1=0.6,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+                # Arrow from revenue to expected value
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.75,
+                    y0=0.65,
+                    x1=0.75,
+                    y1=0.6,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+                # Arrow from expected value to optimization
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.5,
+                    y0=0.45,
+                    x1=0.5,
+                    y1=0.4,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+                # Arrow from optimization to optimized list
+                dict(
+                    type="line",
+                    xref="paper",
+                    yref="paper",
+                    x0=0.5,
+                    y0=0.25,
+                    x1=0.5,
+                    y1=0.2,
+                    line=dict(color="gray", width=2, dash="solid"),
+                    layer="below",
+                ),
+            ]
+        )
+
         # Add the shapes to the figure
         fig.update_layout(
             shapes=shapes,
@@ -158,47 +229,72 @@ with tab1:
             width=600,
             plot_bgcolor="white",
             margin=dict(l=20, r=20, t=20, b=20),
-            showlegend=False
+            showlegend=False,
         )
-        
+
         # Add text annotations
         fig.add_annotation(
-            x=0.5, y=0.925, xref="paper", yref="paper",
+            x=0.5,
+            y=0.925,
+            xref="paper",
+            yref="paper",
             text="1. Data Preprocessing & Feature Engineering",
-            showarrow=False, font=dict(size=12, color="darkblue")
+            showarrow=False,
+            font=dict(size=12, color="darkblue"),
         )
         fig.add_annotation(
-            x=0.25, y=0.725, xref="paper", yref="paper",
+            x=0.25,
+            y=0.725,
+            xref="paper",
+            yref="paper",
             text="2a. Propensity Models",
-            showarrow=False, font=dict(size=12, color="darkgreen")
+            showarrow=False,
+            font=dict(size=12, color="darkgreen"),
         )
         fig.add_annotation(
-            x=0.75, y=0.725, xref="paper", yref="paper",
+            x=0.75,
+            y=0.725,
+            xref="paper",
+            yref="paper",
             text="2b. Revenue Models",
-            showarrow=False, font=dict(size=12, color="darkorange")
+            showarrow=False,
+            font=dict(size=12, color="darkorange"),
         )
         fig.add_annotation(
-            x=0.5, y=0.525, xref="paper", yref="paper",
+            x=0.5,
+            y=0.525,
+            xref="paper",
+            yref="paper",
             text="3. Calculate Expected Values",
-            showarrow=False, font=dict(size=12, color="purple")
+            showarrow=False,
+            font=dict(size=12, color="purple"),
         )
         fig.add_annotation(
-            x=0.5, y=0.325, xref="paper", yref="paper",
+            x=0.5,
+            y=0.325,
+            xref="paper",
+            yref="paper",
             text="4. Constrained Optimization",
-            showarrow=False, font=dict(size=12, color="crimson")
+            showarrow=False,
+            font=dict(size=12, color="crimson"),
         )
         fig.add_annotation(
-            x=0.5, y=0.125, xref="paper", yref="paper",
+            x=0.5,
+            y=0.125,
+            xref="paper",
+            yref="paper",
             text="5. Optimized Client-Product Assignments",
-            showarrow=False, font=dict(size=12, color="goldenrod")
+            showarrow=False,
+            font=dict(size=12, color="goldenrod"),
         )
-        
+
         st.plotly_chart(fig)
 
 with tab2:
     st.header("Modeling Approach")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     ### 1. Data Preprocessing
     
     Before modeling, we perform several preprocessing steps:
@@ -263,12 +359,14 @@ with tab2:
     $$E[Revenue_{i,j}] = P(Sale_{i,j} = 1 | X_i) \\cdot E[Revenue_{i,j} | Sale_{i,j} = 1]$$
     
     This expected value serves as the objective function coefficient in our optimization problem.
-    """)
+    """
+    )
 
 with tab3:
     st.header("Optimization Formulation")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     ### Mathematical Formulation
     
     The optimization problem is formulated as a binary integer programming problem:
@@ -353,12 +451,14 @@ with tab3:
     problem = cp.Problem(objective, constraints)
     problem.solve(solver=cp.ECOS_BB)
     ```
-    """)
+    """
+    )
 
 with tab4:
     st.header("Evaluation Metrics")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     ### Model Evaluation Metrics
     
     #### Propensity Models
@@ -400,12 +500,14 @@ with tab4:
     $$\\text{Total Cost} = \\text{Number of Contacts} \\cdot \\text{Cost Per Contact}$$
     
     By default, we assume a cost per contact of €1.0, but this can be configured.
-    """)
+    """
+    )
 
 with tab5:
     st.header("Implementation Details")
-    
-    st.markdown("""
+
+    st.markdown(
+        """
     ### Project Components
     
     The solution is implemented using a modular architecture with the following key components:
@@ -445,11 +547,13 @@ with tab5:
     
     For reproducibility, all random operations use a fixed seed (default: 42), which can be configured in the 
     main configuration file. MLflow tracking ensures that all experiments are logged and can be compared.
-    """)
+    """
+    )
 
 st.markdown("---")
 
-st.markdown("""
+st.markdown(
+    """
 ## Additional Notes
 
 ### Cost-Benefit Analysis
@@ -476,4 +580,5 @@ The system is designed for continuous improvement:
 2. Models are retrained with the expanded dataset
 3. Optimization parameters are adjusted based on actual performance
 4. The cycle repeats, improving targeting over time
-""")
+"""
+)

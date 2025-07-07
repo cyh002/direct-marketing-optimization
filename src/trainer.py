@@ -1,4 +1,5 @@
 """Training utilities for propensity and revenue models."""
+
 from __future__ import annotations
 
 import os

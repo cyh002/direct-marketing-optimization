@@ -1,4 +1,5 @@
 """Entry point for the Streamlit dashboard."""
+
 from __future__ import annotations
 
 import streamlit as st
@@ -7,7 +8,8 @@ st.set_page_config(page_title="Marketing Dashboard", layout="wide")
 
 st.title("🚀 Direct Marketing Optimization")
 
-st.markdown("""
+st.markdown(
+    """
 ## 📊 Project Overview
 
 This dashboard presents the results of a direct marketing optimization project that helps banks target the right customers with the right products to maximize revenue. Using machine learning, we predict both:
@@ -47,12 +49,16 @@ This project uses Python 3.12 with:
 - 📊 MLflow for experiment tracking
 - 🧮 CVXPY for optimization
 - 📦 Docker for containerization
-""")
+"""
+)
 
 st.sidebar.success("Select a page above")
 
 if st.button("🚀 Start MLflow Server"):
     st.markdown("Starting MLflow server on port 5000...")
     import os
+
     os.system("mlflow server --host 0.0.0.0 --port 5000 &")
-    st.success("✅ MLflow server started! Visit [http://localhost:5000](http://localhost:5000) to view experiments.")
+    st.success(
+        "✅ MLflow server started! Visit [http://localhost:5000](http://localhost:5000) to view experiments."
+    )

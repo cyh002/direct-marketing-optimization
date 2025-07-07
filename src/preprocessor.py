@@ -1,4 +1,5 @@
 """Data preprocessing utilities."""
+
 from __future__ import annotations
 
 from typing import Dict, Tuple, List, Optional
@@ -61,9 +62,15 @@ class Preprocessor:
             raise ValueError("No Sales_Revenues dataset found in datasets_with_sales")
 
         all_clients = datasets_with_sales[sales_dataset_key]["Client"].unique()
-        train_clients, test_clients = train_test_split(all_clients, test_size=test_size, random_state=random_state)
+        train_clients, test_clients = train_test_split(
+            all_clients, test_size=test_size, random_state=random_state
+        )
 
-        self.logger.info("Model split: %d train clients, %d test clients", len(train_clients), len(test_clients))
+        self.logger.info(
+            "Model split: %d train clients, %d test clients",
+            len(train_clients),
+            len(test_clients),
+        )
 
         datasets_train: Dict[str, pd.DataFrame] = {}
         datasets_test: Dict[str, pd.DataFrame] = {}
@@ -112,7 +119,9 @@ class Preprocessor:
 
         for dataset_name in datasets_to_merge:
             if dataset_name in datasets:
-                merged_df = self._merge_single_dataset(merged_df, datasets[dataset_name], dataset_name, join_key)
+                merged_df = self._merge_single_dataset(
+                    merged_df, datasets[dataset_name], dataset_name, join_key
+                )
             else:
                 self.logger.warning("Dataset %s not found for merge", dataset_name)
 
@@ -128,9 +137,13 @@ class Preprocessor:
         """Merge a single dataset into ``merged_df`` using ``join_key``."""
         if join_key in df_to_merge.columns:
             before_shape = merged_df.shape
-            merged_df = merged_df.merge(df_to_merge, on=join_key, how="left", suffixes=("", "_dup"))
+            merged_df = merged_df.merge(
+                df_to_merge, on=join_key, how="left", suffixes=("", "_dup")
+            )
             after_shape = merged_df.shape
-            self.logger.debug("Merged %s: %s -> %s", dataset_name, before_shape, after_shape)
+            self.logger.debug(
+                "Merged %s: %s -> %s", dataset_name, before_shape, after_shape
+            )
             duplicate_cols = [col for col in merged_df.columns if col.endswith("_dup")]
             if duplicate_cols:
                 merged_df = merged_df.drop(columns=duplicate_cols)
@@ -186,13 +199,20 @@ class Preprocessor:
                         fill_value=preprocess_config.categorical_imputer.fill_value,
                     ),
                 ),
-                ("onehot", OneHotEncoder(handle_unknown=preprocess_config.onehot.handle_unknown)),
+                (
+                    "onehot",
+                    OneHotEncoder(
+                        handle_unknown=preprocess_config.onehot.handle_unknown
+                    ),
+                ),
             ]
         )
-        preprocessor = ColumnTransformer([
-            ("num", numeric_transformer, numeric_features),
-            ("cat", categorical_transformer, categorical_features),
-        ])
+        preprocessor = ColumnTransformer(
+            [
+                ("num", numeric_transformer, numeric_features),
+                ("cat", categorical_transformer, categorical_features),
+            ]
+        )
         return preprocessor
 
     def analyze_data_quality(
@@ -207,7 +227,9 @@ class Preprocessor:
         self._analyze_data_types(df)
         self._analyze_data_issues(df)
 
-    def _analyze_missing_values(self, df: pd.DataFrame, max_missing_display: int) -> None:
+    def _analyze_missing_values(
+        self, df: pd.DataFrame, max_missing_display: int
+    ) -> None:
         missing_data = df.isnull().sum()
         missing_data = missing_data[missing_data > 0].sort_values(ascending=False)
         if len(missing_data) > 0:
@@ -231,4 +253,3 @@ class Preprocessor:
         constant_cols = [col for col in df.columns if df[col].nunique() <= 1]
         if constant_cols:
             self.logger.warning("Constant columns: %s", constant_cols)
-

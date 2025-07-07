@@ -5,7 +5,9 @@ import logging.config
 import os
 import yaml
 
-DEFAULT_LOGGING_CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "conf", "logging.yaml")
+DEFAULT_LOGGING_CONFIG = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "..", "conf", "logging.yaml"
+)
 _logger_initialized = False
 
 

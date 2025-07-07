@@ -1,4 +1,5 @@
 """Optimization solver for marketing offers."""
+
 from __future__ import annotations
 
 from typing import Dict, Optional
@@ -28,7 +29,12 @@ class OptimizerSettings(BaseModel):
 class Optimizer:
     """Solve the customer-product assignment problem using linear programming."""
 
-    def __init__(self, contact_limit: int, max_fraction_per_product: Optional[Dict[int, float]] = None, min_expected_revenue: float = 0.0) -> None:
+    def __init__(
+        self,
+        contact_limit: int,
+        max_fraction_per_product: Optional[Dict[int, float]] = None,
+        min_expected_revenue: float = 0.0,
+    ) -> None:
         """Create a new optimizer instance.
 
         Args:

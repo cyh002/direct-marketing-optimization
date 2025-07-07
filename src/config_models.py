@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, ConfigDict, field_validator
 
+
 class FeaturesConfig(BaseModel):
     numeric: List[str]
     categorical: Optional[List[str]] = None
@@ -14,13 +15,16 @@ class FeaturesConfig(BaseModel):
             raise ValueError("numeric feature list cannot be empty")
         return v
 
+
 class NumericImputerConfig(BaseModel):
     strategy: str = "constant"
     fill_value: Any = 0
 
+
 class CategoricalImputerConfig(BaseModel):
     strategy: str = "constant"
     fill_value: str = "missing"
+
 
 class OneHotConfig(BaseModel):
     handle_unknown: str = "ignore"
@@ -32,6 +36,7 @@ class TrainTestSplitConfig(BaseModel):
     test_size: float = 0.2
     random_state: int = 42
 
+
 class PreprocessingConfig(BaseModel):
     features: FeaturesConfig
     categorical: Optional[List[str]] = None
@@ -41,6 +46,7 @@ class PreprocessingConfig(BaseModel):
     train_test_split: TrainTestSplitConfig = TrainTestSplitConfig()
     enable_save: bool = False
     save_path: str = "./preprocessed"
+
 
 class DataConfig(BaseModel):
     raw_excel_path: str
@@ -108,6 +114,7 @@ class ModelConfig(BaseModel):
     model_config = ConfigDict(extra="allow")
     _target_: str
 
+
 class ConfigSchema(BaseModel):
     data: DataConfig
     preprocessing: PreprocessingConfig
@@ -121,4 +128,3 @@ class ConfigSchema(BaseModel):
 
     class Config:
         extra = "ignore"
-

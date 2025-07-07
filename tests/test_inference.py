@@ -20,7 +20,10 @@ def prepare_data():
         cfg = compose(config_name="config")
     cfg = OmegaConf.to_container(cfg, resolve=True)
     cfg["data"]["raw_excel_path"] = os.path.join(
-        os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
+        os.path.dirname(CONFIG_PATH),
+        "data",
+        "raw",
+        "DataScientist_CaseStudy_Dataset.xlsx",
     )
     cfg["preprocessing"]["enable_save"] = False
     loader = DataLoader(config=cfg)
@@ -90,5 +93,3 @@ def test_inference_workflow(tmp_path):
     assert (prop_preds > 0).all().all()
     assert (prop_preds <= 1.0).all().all()
     assert (rev_preds >= 0).all().all()
-
-

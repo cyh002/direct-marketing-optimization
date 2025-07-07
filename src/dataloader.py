@@ -1,4 +1,5 @@
 """Data loading utilities."""
+
 from __future__ import annotations
 
 from typing import Dict, List, Optional, Tuple
@@ -12,7 +13,9 @@ from .logging import get_logger
 class DataLoader:
     """Load Excel datasets and provide business logic splits."""
 
-    def __init__(self, config_path: Optional[str] = None, config: Optional[Dict] = None) -> None:
+    def __init__(
+        self, config_path: Optional[str] = None, config: Optional[Dict] = None
+    ) -> None:
         """Create a new ``DataLoader`` instance.
 
         Args:
@@ -24,7 +27,9 @@ class DataLoader:
         self.config_loader = ConfigLoader(config_path=config_path, config=config)
         self.config = self.config_loader.get_config()
 
-    def load_excel_datasets(self, excel_path: Optional[str] = None) -> Dict[str, pd.DataFrame]:
+    def load_excel_datasets(
+        self, excel_path: Optional[str] = None
+    ) -> Dict[str, pd.DataFrame]:
         """Load all sheets from an Excel workbook.
 
         Args:
@@ -39,7 +44,9 @@ class DataLoader:
             ValueError: If the file cannot be read.
         """
         if excel_path is None:
-            excel_path = self.config_loader.resolve_path(self.config.data.raw_excel_path)
+            excel_path = self.config_loader.resolve_path(
+                self.config.data.raw_excel_path
+            )
         else:
             excel_path = self.config_loader.resolve_path(excel_path)
 
@@ -52,9 +59,7 @@ class DataLoader:
                 for sheet in xls.sheet_names
             }
         except FileNotFoundError as exc:  # pragma: no cover - I/O errors
-            raise FileNotFoundError(
-                f"Excel file not found at: {excel_path}"
-            ) from exc
+            raise FileNotFoundError(f"Excel file not found at: {excel_path}") from exc
         except Exception as exc:  # pragma: no cover - general catch
             raise ValueError(f"Error loading Excel file: {exc}") from exc
 
@@ -114,7 +119,11 @@ class DataLoader:
         return datasets_with_sales, datasets_without_sales
 
     def _log_split_summary(
-        self, name: str, original_df: pd.DataFrame, with_sales_df: pd.DataFrame, without_sales_df: pd.DataFrame
+        self,
+        name: str,
+        original_df: pd.DataFrame,
+        with_sales_df: pd.DataFrame,
+        without_sales_df: pd.DataFrame,
     ) -> None:
         """Log the row counts after splitting a dataset."""
         total_rows = len(original_df)
@@ -166,4 +175,3 @@ def load_and_create_sales_split(
     datasets = loader.load_configured_sheets()
     with_sales, without_sales = loader.create_sales_data_split(datasets)
     return with_sales, without_sales, loader
-

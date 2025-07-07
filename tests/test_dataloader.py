@@ -13,7 +13,10 @@ def get_loader():
         cfg = compose(config_name="config")
     cfg = OmegaConf.to_container(cfg, resolve=True)
     cfg["data"]["raw_excel_path"] = os.path.join(
-        os.path.dirname(CONFIG_PATH), "data", "raw", "DataScientist_CaseStudy_Dataset.xlsx"
+        os.path.dirname(CONFIG_PATH),
+        "data",
+        "raw",
+        "DataScientist_CaseStudy_Dataset.xlsx",
     )
     return DataLoader(config=cfg)
 
@@ -39,4 +42,3 @@ def test_create_sales_data_split():
     with_sales, without_sales = loader.create_sales_data_split(datasets)
     assert len(with_sales["Sales_Revenues_with_sales"]) == 969
     assert len(without_sales["Sales_Revenues_without_sales"]) == 0
-

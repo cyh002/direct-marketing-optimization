@@ -1,4 +1,5 @@
 """Utility for loading pretrained models when training is disabled."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -17,7 +18,9 @@ class ModelLoader:
     structure and loads models for inference when training is disabled.
     """
 
-    def __init__(self, config_path: Optional[str] = None, config: Optional[dict] = None) -> None:
+    def __init__(
+        self, config_path: Optional[str] = None, config: Optional[dict] = None
+    ) -> None:
         """Create a loader for pretrained models.
 
         Args:

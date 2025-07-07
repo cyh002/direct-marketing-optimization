@@ -1,4 +1,5 @@
 """Evaluation utilities for marketing offers."""
+
 from __future__ import annotations
 
 from typing import Dict, Iterable, List, Optional, Sequence
@@ -15,6 +16,7 @@ from .metrics import (
     Metric,
     ROIMetric,
 )
+
 
 class Evaluator:
     """Compute evaluation metrics for optimized offers."""
@@ -102,5 +104,3 @@ class Evaluator:
         pd.DataFrame([results]).to_csv(abs_path, index=False)
         self.logger.info("Saved evaluation metrics to %s", abs_path)
         return abs_path
-
-

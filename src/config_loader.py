@@ -12,7 +12,9 @@ from .logging import get_logger
 class ConfigLoader:
     """Load and validate project configuration."""
 
-    def __init__(self, config_path: Optional[str] = None, config: Optional[Dict] = None) -> None:
+    def __init__(
+        self, config_path: Optional[str] = None, config: Optional[Dict] = None
+    ) -> None:
         """Initialize the loader from a path or dictionary.
 
         Args:

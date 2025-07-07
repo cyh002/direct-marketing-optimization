@@ -22,6 +22,7 @@ import pandas as pd
 setup_logging()
 logger = get_logger(__name__)
 
+
 def run_inference(
     cfg: DictConfig,
     preprocessor: Preprocessor,
@@ -133,7 +134,9 @@ def main(cfg: DictConfig) -> None:
     logger.info("Created sales data split")
     preprocessor = Preprocessor(loader.get_config())
     train_sets, _ = preprocessor.create_model_train_test_split(
-        with_sales, test_size=cfg.preprocessing.train_test_split.test_size, random_state=cfg.preprocessing.train_test_split.random_state
+        with_sales,
+        test_size=cfg.preprocessing.train_test_split.test_size,
+        random_state=cfg.preprocessing.train_test_split.random_state,
     )
     logger.info("Created train/test split")
     merged = preprocessor.merge_datasets(
@@ -194,6 +197,7 @@ def main(cfg: DictConfig) -> None:
             loader = ModelLoader(config=config_dict)
             loader.load_model("propensity", product)
             loader.load_model("revenue", product)
+
     # ---------- Load and preprocess data ----------
     with ThreadPoolExecutor(max_workers=len(cfg.products)) as executor:
         executor.map(train_for_product, cfg.products)

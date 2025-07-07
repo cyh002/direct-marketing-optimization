@@ -1,4 +1,5 @@
 """Inference utilities for propensity and revenue models."""
+
 from __future__ import annotations
 
 import os
@@ -18,7 +19,9 @@ class BaseInference(ABC):
     model_type: str
     output_prefix: str
 
-    def __init__(self, config_path: Optional[str] = None, config: Optional[dict] = None) -> None:
+    def __init__(
+        self, config_path: Optional[str] = None, config: Optional[dict] = None
+    ) -> None:
         """Instantiate the inference helper.
 
         Args:
@@ -31,7 +34,9 @@ class BaseInference(ABC):
         self.config = self.config_loader.get_config()
         self.model_loader = ModelLoader(config_path=config_path, config=config)
         self.products = self.config.products
-        self.output_dir = self.config_loader.resolve_path(self.config.inference.output_dir)
+        self.output_dir = self.config_loader.resolve_path(
+            self.config.inference.output_dir
+        )
         os.makedirs(self.output_dir, exist_ok=True)
 
     @abstractmethod
@@ -75,4 +80,3 @@ class RevenueInference(BaseInference):
 
     def _predict(self, model, X: pd.DataFrame) -> pd.Series:
         return pd.Series(model.predict(X), index=X.index)
-

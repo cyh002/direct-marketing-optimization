@@ -1,4 +1,5 @@
 """Utility functions for Streamlit dashboard."""
+
 from __future__ import annotations
 
 import glob
@@ -89,7 +90,11 @@ def list_products(model_type_dir: str) -> List[str]:
     """Return available products for a model type."""
     if not os.path.exists(model_type_dir):
         return []
-    return [p for p in os.listdir(model_type_dir) if os.path.isdir(os.path.join(model_type_dir, p))]
+    return [
+        p
+        for p in os.listdir(model_type_dir)
+        if os.path.isdir(os.path.join(model_type_dir, p))
+    ]
 
 
 def classification_metrics(y_true: pd.Series, y_prob: pd.Series) -> Dict[str, float]:
