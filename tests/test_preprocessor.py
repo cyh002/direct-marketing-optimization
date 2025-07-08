@@ -104,3 +104,18 @@ def test_train_test_split_saved(tmp_path):
     train_df = pd.read_csv(train_path)
     test_df = pd.read_csv(test_path)
     assert set(train_df.columns) == set(test_df.columns)
+
+
+def test_remove_multicollinearity():
+    """Numeric features should be reduced when thresholds are low."""
+    loader, preprocessor, with_sales = get_loader_and_preprocessor()
+    train, _ = preprocessor.create_model_train_test_split(with_sales)
+    merged = preprocessor.merge_datasets(
+        train, base_dataset_key="Sales_Revenues_train"
+    )
+    numeric, _ = loader.get_feature_lists()
+    filtered = preprocessor.remove_multicollinearity(
+        merged, numeric, corr_threshold=0.1, vif_threshold=1.0
+    )
+    assert set(filtered).issubset(set(numeric))
+    assert len(filtered) < len(numeric)

@@ -203,6 +203,7 @@ This setup mirrors a real-world scenario where a bank must allocate limited mark
 - **Interactive Dashboard** – comprehensive Streamlit web interface
 - **Optimization Engine** – mathematical optimization to maximize revenue under constraints
 - **Configurable Pipeline** – Hydra-based configuration management
+- **Collinearity Filtering** – optional removal of highly correlated features
 - **Comprehensive Testing** – full test suite with pytest
 - **Containerized Deployment** – Docker support for easy deployment
 

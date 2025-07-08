@@ -79,4 +79,6 @@ class RevenueInference(BaseInference):
     output_prefix = "expected_revenue"
 
     def _predict(self, model, X: pd.DataFrame) -> pd.Series:
-        return pd.Series(model.predict(X), index=X.index)
+        preds = pd.Series(model.predict(X), index=X.index)
+        preds[preds < 0] = 0.0
+        return preds
