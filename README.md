@@ -76,6 +76,7 @@ This project leverages several modern Python libraries and tools:
   <img src="images/plotly.png" alt="Plotly" height="30" style="margin: 2px;" />
   <img src="images/uv.png" alt="uv" height="30" style="margin: 2px;" />
   <img src="images/sphinx.png" alt="sphinx" height="30" style="margin: 2px;" />
+  <img src="images/cvxpy.jpeg" alt="cvxpy" height="30" style="margin: 2px;" />
 </div>
 
 - **Hydra** – organizes configuration files and allows easy experiment
