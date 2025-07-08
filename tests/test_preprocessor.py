@@ -111,9 +111,7 @@ def test_remove_multicollinearity():
     """Numeric features should be reduced when thresholds are low."""
     loader, preprocessor, with_sales = get_loader_and_preprocessor()
     train, _ = preprocessor.create_model_train_test_split(with_sales)
-    merged = preprocessor.merge_datasets(
-        train, base_dataset_key="Sales_Revenues_train"
-    )
+    merged = preprocessor.merge_datasets(train, base_dataset_key="Sales_Revenues_train")
     numeric, _ = loader.get_feature_lists()
     filtered = preprocessor.remove_multicollinearity(
         merged, numeric, corr_threshold=0.1, vif_threshold=1.0
