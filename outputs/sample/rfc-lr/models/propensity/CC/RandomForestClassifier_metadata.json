@@ -3,7 +3,7 @@
   "params": {
     "bootstrap": true,
     "ccp_alpha": 0.0,
-    "class_weight": null,
+    "class_weight": "balanced",
     "criterion": "gini",
     "max_depth": 10,
     "max_features": "sqrt",
@@ -21,6 +21,6 @@
     "verbose": 0,
     "warm_start": false
   },
-  "train_score": 0.726986654263093,
-  "test_score": 0.23389726905254857
+  "train_score": 0.9455071659853889,
+  "test_score": 0.27369324751177065
 }

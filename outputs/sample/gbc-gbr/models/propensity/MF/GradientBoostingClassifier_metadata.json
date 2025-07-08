@@ -23,5 +23,5 @@
     "warm_start": false
   },
   "train_score": 0.7322765253509399,
-  "test_score": 0.22181818181818183
+  "test_score": 0.21094751344325932
 }

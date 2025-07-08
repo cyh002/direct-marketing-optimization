@@ -1,66 +1,67 @@
-[2025-07-07 20:03:34,454][__main__][INFO] - Starting main workflow
-[2025-07-07 20:03:34,470][__main__][INFO] - Loading datasets
-[2025-07-07 20:03:34,470][DataLoader][INFO] - Loading Excel file from /home/c-hiy/direct-marketing-optimization/data/raw/DataScientist_CaseStudy_Dataset.xlsx
-[2025-07-07 20:03:34,762][__main__][INFO] - Created sales data split
-[2025-07-07 20:03:34,763][Preprocessor][INFO] - Model split: 775 train clients, 194 test clients
-[2025-07-07 20:03:34,780][Preprocessor][INFO] - Saved train/test splits to ./preprocessed
-[2025-07-07 20:03:34,780][__main__][INFO] - Created train/test split
-[2025-07-07 20:03:34,782][__main__][INFO] - Merged training datasets
-[2025-07-07 20:03:34,782][__main__][INFO] - Training dataset shape: (775, 36)
-[2025-07-07 20:03:34,782][__main__][INFO] - Preprocessing pipeline created
-[2025-07-07 20:03:34,783][__main__][INFO] - Processing product CL
-[2025-07-07 20:03:34,784][__main__][INFO] - Processing product MF
-[2025-07-07 20:03:34,785][__main__][INFO] - Processing product CC
-[2025-07-07 20:03:34,786][__main__][INFO] - Training models for CC
-[2025-07-07 20:03:34,787][__main__][INFO] - Training models for CL
-[2025-07-07 20:03:34,788][__main__][INFO] - Training models for MF
-[2025-07-07 20:03:35,018][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
-[2025-07-07 20:03:35,020][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
-[2025-07-07 20:03:35,021][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
-[2025-07-07 20:03:35,279][PropensityTrainer][INFO] - Cross validation completed: train_score=0.4842, test_score=0.4009
-[2025-07-07 20:03:35,306][PropensityTrainer][INFO] - Cross validation completed: train_score=0.3620, test_score=0.2788
-[2025-07-07 20:03:35,350][PropensityTrainer][INFO] - Cross validation completed: train_score=0.2988, test_score=0.1940
-[2025-07-07 20:03:38,495][PropensityTrainer][INFO] - Model saved to ./models/propensity/CL/LogisticRegression.joblib
-[2025-07-07 20:03:38,496][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CL/LogisticRegression_metadata.json
-[2025-07-07 20:03:38,604][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
-[2025-07-07 20:03:38,765][PropensityTrainer][INFO] - Model saved to ./models/propensity/CC/LogisticRegression.joblib
-[2025-07-07 20:03:38,765][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CC/LogisticRegression_metadata.json
-[2025-07-07 20:03:38,789][PropensityTrainer][INFO] - Model saved to ./models/propensity/MF/LogisticRegression.joblib
-[2025-07-07 20:03:38,789][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/MF/LogisticRegression_metadata.json
-[2025-07-07 20:03:38,794][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
-[2025-07-07 20:03:38,819][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
-[2025-07-07 20:03:39,730][RevenueTrainer][INFO] - Cross validation completed: train_score=-4.0715, test_score=-8.1783
-[2025-07-07 20:03:39,826][RevenueTrainer][INFO] - Cross validation completed: train_score=-3.1181, test_score=-17.8691
-[2025-07-07 20:03:39,859][RevenueTrainer][INFO] - Cross validation completed: train_score=-2.7505, test_score=-7.3593
-[2025-07-07 20:03:41,169][RevenueTrainer][INFO] - Model saved to ./models/revenue/CL/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,169][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CL/GradientBoostingRegressor_metadata.json
-[2025-07-07 20:03:41,176][__main__][INFO] - Finished training models for CL
-[2025-07-07 20:03:41,479][RevenueTrainer][INFO] - Model saved to ./models/revenue/CC/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,480][RevenueTrainer][INFO] - Model saved to ./models/revenue/MF/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,480][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CC/GradientBoostingRegressor_metadata.json
-[2025-07-07 20:03:41,480][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/MF/GradientBoostingRegressor_metadata.json
-[2025-07-07 20:03:41,493][__main__][INFO] - Finished training models for CC
-[2025-07-07 20:03:41,494][__main__][INFO] - Finished training models for MF
-[2025-07-07 20:03:41,494][__main__][INFO] - Starting inference
-[2025-07-07 20:03:41,494][__main__][INFO] - Merging datasets for inference
-[2025-07-07 20:03:41,497][__main__][INFO] - Running propensity and revenue inference
-[2025-07-07 20:03:41,498][ModelLoader][INFO] - Loaded model from models/propensity/CL/LogisticRegression.joblib
-[2025-07-07 20:03:41,501][ModelLoader][INFO] - Loaded model from models/propensity/MF/LogisticRegression.joblib
-[2025-07-07 20:03:41,504][ModelLoader][INFO] - Loaded model from models/propensity/CC/LogisticRegression.joblib
-[2025-07-07 20:03:41,507][ModelLoader][INFO] - Loaded model from models/revenue/CL/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,511][ModelLoader][INFO] - Loaded model from models/revenue/MF/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,516][ModelLoader][INFO] - Loaded model from models/revenue/CC/GradientBoostingRegressor.joblib
-[2025-07-07 20:03:41,520][__main__][INFO] - Saving inference results
-[2025-07-07 20:03:41,523][PropensityInference][INFO] - Saved inference results to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/20-03-34/inference/propensity_predictions.csv
-[2025-07-07 20:03:41,526][RevenueInference][INFO] - Saved inference results to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/20-03-34/inference/revenue_predictions.csv
-[2025-07-07 20:03:41,526][__main__][INFO] - Starting optimization
-[2025-07-07 20:03:41,526][__main__][INFO] - Running optimization
-[2025-07-07 20:03:41,558][__main__][INFO] - Starting evaluation
-[2025-07-07 20:03:41,558][__main__][INFO] - Evaluating optimization results
-[2025-07-07 20:03:41,558][__main__][INFO] - total_revenue: 1150.4971
-[2025-07-07 20:03:41,558][__main__][INFO] - revenue_per_contact: 11.5050
-[2025-07-07 20:03:41,558][__main__][INFO] - acceptance_rate: 0.6321
-[2025-07-07 20:03:41,558][__main__][INFO] - roi: 11.5050
-[2025-07-07 20:03:41,559][Evaluator][INFO] - Saved evaluation metrics to /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/20-03-34/results/evaluation_metrics.csv
-[2025-07-07 20:03:41,559][__main__][INFO] - Saving optimized offers
-[2025-07-07 20:03:41,559][__main__][INFO] - Saving optimized offers
+[2025-07-08 06:33:26,157][__main__][INFO] - Starting main workflow
+[2025-07-08 06:33:26,172][__main__][INFO] - Loading datasets
+[2025-07-08 06:33:26,172][DataLoader][INFO] - Loading Excel file from /app/data/raw/DataScientist_CaseStudy_Dataset.xlsx
+[2025-07-08 06:33:26,519][__main__][INFO] - Created sales data split
+[2025-07-08 06:33:26,520][Preprocessor][INFO] - Model split: 775 train clients, 194 test clients
+[2025-07-08 06:33:26,539][Preprocessor][INFO] - Saved train/test splits to ./preprocessed
+[2025-07-08 06:33:26,539][__main__][INFO] - Created train/test split
+[2025-07-08 06:33:26,541][__main__][INFO] - Merged training datasets
+[2025-07-08 06:33:26,541][__main__][INFO] - Training dataset shape: (775, 36)
+[2025-07-08 06:33:26,591][Preprocessor][INFO] - Dropped due to collinearity: ['Count_CA', 'TransactionsCred_CA', 'TransactionsDeb', 'TransactionsDebCashless_Card', 'TransactionsDeb_CA', 'VolumeCred_CA', 'VolumeDeb', 'VolumeDeb_CA', 'VolumeDeb_PaymentOrder']
+[2025-07-08 06:33:26,591][__main__][INFO] - Preprocessing pipeline created
+[2025-07-08 06:33:26,592][__main__][INFO] - Processing product CL
+[2025-07-08 06:33:26,592][__main__][INFO] - Processing product MF
+[2025-07-08 06:33:26,593][__main__][INFO] - Processing product CC
+[2025-07-08 06:33:26,594][__main__][INFO] - Training models for MF
+[2025-07-08 06:33:26,594][__main__][INFO] - Training models for CL
+[2025-07-08 06:33:26,594][__main__][INFO] - Training models for CC
+[2025-07-08 06:33:26,835][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-08 06:33:26,837][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-08 06:33:26,838][PropensityTrainer][INFO] - Starting cross validation with scoring=f1 and 5 folds
+[2025-07-08 06:33:27,144][PropensityTrainer][INFO] - Cross validation completed: train_score=0.5319, test_score=0.5203
+[2025-07-08 06:33:27,159][PropensityTrainer][INFO] - Cross validation completed: train_score=0.4305, test_score=0.3635
+[2025-07-08 06:33:27,163][PropensityTrainer][INFO] - Cross validation completed: train_score=0.3775, test_score=0.3036
+[2025-07-08 06:33:31,088][PropensityTrainer][INFO] - Model saved to ./models/propensity/CL/LogisticRegression.joblib
+[2025-07-08 06:33:31,089][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CL/LogisticRegression_metadata.json
+[2025-07-08 06:33:31,229][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-08 06:33:31,248][PropensityTrainer][INFO] - Model saved to ./models/propensity/CC/LogisticRegression.joblib
+[2025-07-08 06:33:31,249][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/CC/LogisticRegression_metadata.json
+[2025-07-08 06:33:31,272][PropensityTrainer][INFO] - Model saved to ./models/propensity/MF/LogisticRegression.joblib
+[2025-07-08 06:33:31,273][PropensityTrainer][INFO] - Metadata saved to ./models/propensity/MF/LogisticRegression_metadata.json
+[2025-07-08 06:33:31,276][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-08 06:33:31,299][RevenueTrainer][INFO] - Starting cross validation with scoring=neg_root_mean_squared_error and 5 folds
+[2025-07-08 06:33:32,042][RevenueTrainer][INFO] - Cross validation completed: train_score=-4.2962, test_score=-9.3834
+[2025-07-08 06:33:32,081][RevenueTrainer][INFO] - Cross validation completed: train_score=-3.4075, test_score=-20.7995
+[2025-07-08 06:33:32,101][RevenueTrainer][INFO] - Cross validation completed: train_score=-2.9396, test_score=-7.2894
+[2025-07-08 06:33:34,120][RevenueTrainer][INFO] - Model saved to ./models/revenue/CC/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,124][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CC/GradientBoostingRegressor_metadata.json
+[2025-07-08 06:33:34,150][__main__][INFO] - Finished training models for CC
+[2025-07-08 06:33:34,226][RevenueTrainer][INFO] - Model saved to ./models/revenue/CL/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,226][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/CL/GradientBoostingRegressor_metadata.json
+[2025-07-08 06:33:34,236][__main__][INFO] - Finished training models for CL
+[2025-07-08 06:33:34,242][RevenueTrainer][INFO] - Model saved to ./models/revenue/MF/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,243][RevenueTrainer][INFO] - Metadata saved to ./models/revenue/MF/GradientBoostingRegressor_metadata.json
+[2025-07-08 06:33:34,250][__main__][INFO] - Finished training models for MF
+[2025-07-08 06:33:34,250][__main__][INFO] - Starting inference
+[2025-07-08 06:33:34,250][__main__][INFO] - Merging datasets for inference
+[2025-07-08 06:33:34,254][__main__][INFO] - Running propensity and revenue inference
+[2025-07-08 06:33:34,255][ModelLoader][INFO] - Loaded model from models/propensity/CL/LogisticRegression.joblib
+[2025-07-08 06:33:34,260][ModelLoader][INFO] - Loaded model from models/propensity/MF/LogisticRegression.joblib
+[2025-07-08 06:33:34,264][ModelLoader][INFO] - Loaded model from models/propensity/CC/LogisticRegression.joblib
+[2025-07-08 06:33:34,269][ModelLoader][INFO] - Loaded model from models/revenue/CL/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,275][ModelLoader][INFO] - Loaded model from models/revenue/MF/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,280][ModelLoader][INFO] - Loaded model from models/revenue/CC/GradientBoostingRegressor.joblib
+[2025-07-08 06:33:34,286][__main__][INFO] - Saving inference results
+[2025-07-08 06:33:34,289][PropensityInference][INFO] - Saved inference results to /app/outputs/2025-07-08/06-33-26/inference/propensity_predictions.csv
+[2025-07-08 06:33:34,292][RevenueInference][INFO] - Saved inference results to /app/outputs/2025-07-08/06-33-26/inference/revenue_predictions.csv
+[2025-07-08 06:33:34,292][__main__][INFO] - Starting optimization
+[2025-07-08 06:33:34,292][__main__][INFO] - Running optimization
+[2025-07-08 06:33:34,325][__main__][INFO] - Starting evaluation
+[2025-07-08 06:33:34,325][__main__][INFO] - Evaluating optimization results
+[2025-07-08 06:33:34,325][__main__][INFO] - total_revenue: 1504.2697
+[2025-07-08 06:33:34,326][__main__][INFO] - revenue_per_contact: 15.0427
+[2025-07-08 06:33:34,326][__main__][INFO] - acceptance_rate: 0.7031
+[2025-07-08 06:33:34,326][__main__][INFO] - roi: 15.0427
+[2025-07-08 06:33:34,326][Evaluator][INFO] - Saved evaluation metrics to /app/outputs/2025-07-08/06-33-26/results/evaluation_metrics.csv
+[2025-07-08 06:33:34,326][__main__][INFO] - Saving optimized offers
+[2025-07-08 06:33:34,326][__main__][INFO] - Saving optimized offers

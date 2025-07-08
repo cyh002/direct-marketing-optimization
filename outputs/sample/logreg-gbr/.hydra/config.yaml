@@ -59,6 +59,10 @@ preprocessing:
     random_state: ${seed}
   enable_save: true
   save_path: ./preprocessed
+  collinearity_filter:
+    enabled: true
+    corr_threshold: 0.8
+    vif_threshold: 5.0
 optimization:
   contact_limit: 100
   single_offer_per_client: true
@@ -103,6 +107,7 @@ propensity_model:
   solver: liblinear
   l1_ratio: null
   max_iter: 200
+  class_weight: balanced
 revenue_model:
   _target_: sklearn.ensemble.GradientBoostingRegressor
   n_estimators: 100

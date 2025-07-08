@@ -149,18 +149,18 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.1'
-    cwd: /home/c-hiy/direct-marketing-optimization
+    cwd: /app
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /home/c-hiy/direct-marketing-optimization/conf
+    - path: /app/conf
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/19-52-16
+    output_dir: /app/outputs/2025-07-08/06-35-28
     choices:
       revenue_model: linear_regression
       propensity_model: random_forest

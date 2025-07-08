@@ -7,6 +7,6 @@
     "positive": false,
     "tol": 1e-6
   },
-  "train_score": -15.756555945074348,
-  "test_score": -13.57520084138098
+  "train_score": -15.89665515736148,
+  "test_score": -13.293265898885448
 }

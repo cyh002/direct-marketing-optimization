@@ -166,7 +166,7 @@ hydra:
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /app/outputs/2025-07-07/11-44-44
+    output_dir: /app/outputs/2025-07-08/06-34-19
     choices:
       revenue_model: random_forest
       propensity_model: logistic_regression

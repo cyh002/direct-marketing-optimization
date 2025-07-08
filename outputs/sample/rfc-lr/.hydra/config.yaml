@@ -59,6 +59,10 @@ preprocessing:
     random_state: ${seed}
   enable_save: true
   save_path: ./preprocessed
+  collinearity_filter:
+    enabled: true
+    corr_threshold: 0.8
+    vif_threshold: 5.0
 optimization:
   contact_limit: 100
   single_offer_per_client: true
@@ -101,6 +105,7 @@ propensity_model:
   min_samples_split: 2
   min_samples_leaf: 1
   bootstrap: true
+  class_weight: balanced
 revenue_model:
   _target_: sklearn.linear_model.LinearRegression
   fit_intercept: true

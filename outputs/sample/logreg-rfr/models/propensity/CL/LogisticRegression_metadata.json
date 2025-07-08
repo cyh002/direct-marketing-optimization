@@ -2,7 +2,7 @@
   "model_name": "LogisticRegression",
   "params": {
     "C": 1.0,
-    "class_weight": null,
+    "class_weight": "balanced",
     "dual": false,
     "fit_intercept": true,
     "intercept_scaling": 1,
@@ -17,6 +17,6 @@
     "verbose": 0,
     "warm_start": false
   },
-  "train_score": 0.4842436784666161,
-  "test_score": 0.40090424902355315
+  "train_score": 0.531906699321904,
+  "test_score": 0.5203281616562463
 }

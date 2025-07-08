@@ -30,9 +30,9 @@ hydra:
       propensity_model.n_estimators: range(50, 200, step=50)
       propensity_model.learning_rate: range(0.01, 0.2, step=0.05)
       propensity_model.max_depth: range(3, 10, step=2)
-      revenue_model.n_estimators: range(50, 200, step=50)
-      revenue_model.learning_rate: range(0.01, 0.2, step=0.05)
-      revenue_model.max_depth: range(3, 10, step=2)
+      revenue_model.n_estimators: range(50, 200, step=25)
+      revenue_model.learning_rate: range(0.01, 0.2, step=0.01)
+      revenue_model.max_depth: range(3, 10, step=1)
     custom_search_space: null
   help:
     app_name: ${hydra.job.name}
@@ -153,18 +153,18 @@ hydra:
   runtime:
     version: 1.3.2
     version_base: '1.1'
-    cwd: /home/c-hiy/direct-marketing-optimization
+    cwd: /app
     config_sources:
     - path: hydra.conf
       schema: pkg
       provider: hydra
-    - path: /home/c-hiy/direct-marketing-optimization/conf
+    - path: /app/conf
       schema: file
       provider: main
     - path: ''
       schema: structured
       provider: schema
-    output_dir: /home/c-hiy/direct-marketing-optimization/outputs/2025-07-07/19-48-42
+    output_dir: /app/outputs/2025-07-08/06-32-02
     choices:
       revenue_model: gradient_boosting
       propensity_model: gradient_boosting

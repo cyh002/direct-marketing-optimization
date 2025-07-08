@@ -23,6 +23,6 @@
     "verbose": 0,
     "warm_start": false
   },
-  "train_score": -3.1220003813009614,
-  "test_score": -17.46509443690107
+  "train_score": -3.08612962261458,
+  "test_score": -18.366766406398675
 }
