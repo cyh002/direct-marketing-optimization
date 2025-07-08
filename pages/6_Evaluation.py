@@ -3,11 +3,9 @@
 from __future__ import annotations
 
 import os
-import numpy as np
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-import plotly.graph_objects as go
 from src.streamlit_utils import load_predictions
 
 st.header("📏 Optimization Evaluation")
