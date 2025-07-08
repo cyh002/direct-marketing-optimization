@@ -1,3 +1,12 @@
+## Author & Contact Information 👋
+
+👤 **Author:** Christopher Hoo
+
+📧 **Email:** c-hi.yang@hotmail.sg
+
+💼 **LinkedIn:** [Link 🔗](https://www.linkedin.com/in/christopher-chi-yang-hoo-570698bb/)
+
+
 # Executive Summary / Technical Documentation
 
 This repository contains a case study project for optimizing direct marketing campaigns in a banking context. Dummy customer data is used to predict purchase propensity and expected revenue for three products (Consumer Loan, Credit Card, Mutual Fund). An optimization step then selects which clients to contact in order to maximize total revenue while respecting contact limitations.
@@ -260,10 +269,3 @@ sudo docker compose up docs
 
 This provides comprehensive API documentation for all modules in the [`src/`](src/) package.
 
-## Author & Contact Information 👋
-
-👤 **Author:** Christopher Hoo
-
-📧 **Email:** c-hi.yang@hotmail.sg
-
-💼 **LinkedIn:** [Link 🔗](https://www.linkedin.com/in/christopher-chi-yang-hoo-570698bb/)
