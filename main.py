@@ -26,7 +26,6 @@ logger = get_logger(__name__)
 def run_inference(
     cfg: DictConfig,
     preprocessor: Preprocessor,
-    loader: DataLoader,
     datasets: dict,
     config_dict: dict,
     numeric_features: list[str],
@@ -37,7 +36,10 @@ def run_inference(
     Args:
         cfg: Hydra configuration object.
         preprocessor: Instance used to merge datasets.
+<<<<<<< HEAD
         loader: DataLoader with project configuration.
+=======
+>>>>>>> origin/mmeuu4-codex/find-multicollinearity-implications
         datasets: Raw datasets to merge for inference.
         config_dict: Configuration dictionary for inference objects.
         numeric_features: Numeric feature list used during training.
@@ -167,11 +169,24 @@ def main(cfg: DictConfig) -> None:
         )
     logger.info("Training dataset shape: %s", merged.shape)
     numeric, categorical = loader.get_feature_lists()
+<<<<<<< HEAD
     if cfg.preprocessing.collinearity_filter.enabled and (
         "linear_model" in cfg.propensity_model._target_
         or "linear_model" in cfg.revenue_model._target_
     ):
         numeric = preprocessor.remove_multicollinearity(merged, numeric)
+=======
+    if (
+        cfg.preprocessing.collinearity_filter.enabled
+        and (
+            "linear_model" in cfg.propensity_model._target_
+            or "linear_model" in cfg.revenue_model._target_
+        )
+    ):
+        numeric = preprocessor.remove_multicollinearity(
+            merged, numeric
+        )
+>>>>>>> origin/mmeuu4-codex/find-multicollinearity-implications
     X = merged[numeric + categorical]
     pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
     logger.info("Preprocessing pipeline created")
@@ -225,7 +240,10 @@ def main(cfg: DictConfig) -> None:
     prop_preds, rev_preds, client_index = run_inference(
         cfg,
         preprocessor,
+<<<<<<< HEAD
         loader,
+=======
+>>>>>>> origin/mmeuu4-codex/find-multicollinearity-implications
         datasets,
         config_dict,
         numeric,

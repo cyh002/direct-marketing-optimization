@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from hydra import compose, initialize_config_dir
 from omegaconf import OmegaConf
 from src.dataloader import DataLoader
@@ -110,10 +111,33 @@ def test_remove_multicollinearity():
     """Numeric features should be reduced when thresholds are low."""
     loader, preprocessor, with_sales = get_loader_and_preprocessor()
     train, _ = preprocessor.create_model_train_test_split(with_sales)
-    merged = preprocessor.merge_datasets(train, base_dataset_key="Sales_Revenues_train")
+    merged = preprocessor.merge_datasets(
+        train, base_dataset_key="Sales_Revenues_train"
+    )
     numeric, _ = loader.get_feature_lists()
     filtered = preprocessor.remove_multicollinearity(
         merged, numeric, corr_threshold=0.1, vif_threshold=1.0
     )
     assert set(filtered).issubset(set(numeric))
     assert len(filtered) < len(numeric)
+
+
+def test_remove_multicollinearity_drops_single_from_pair():
+    """Only one of a highly correlated pair should be removed."""
+    _loader, preprocessor, _ = get_loader_and_preprocessor()
+    np.random.seed(0)
+    n = 200
+    x1 = np.random.randn(n)
+    x2 = x1 + np.random.normal(scale=0.01, size=n)
+    x3 = np.random.randn(n)
+    x4 = np.random.randn(n)
+    df = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4})
+    features = ["x1", "x2", "x3", "x4"]
+    remaining = preprocessor.remove_multicollinearity(
+        df,
+        features,
+        corr_threshold=0.8,
+        vif_threshold=5.0,
+    )
+    assert "x1" in remaining or "x2" in remaining
+    assert not ("x1" not in remaining and "x2" not in remaining)
