@@ -30,6 +30,14 @@ class OneHotConfig(BaseModel):
     handle_unknown: str = "ignore"
 
 
+class CollinearityFilterConfig(BaseModel):
+    """Settings for multicollinearity removal."""
+
+    enabled: bool = False
+    corr_threshold: float = 0.8
+    vif_threshold: float = 5.0
+
+
 class TrainTestSplitConfig(BaseModel):
     """Configuration for train-test split."""
 
@@ -46,6 +54,7 @@ class PreprocessingConfig(BaseModel):
     train_test_split: TrainTestSplitConfig = TrainTestSplitConfig()
     enable_save: bool = False
     save_path: str = "./preprocessed"
+    collinearity_filter: CollinearityFilterConfig = CollinearityFilterConfig()
 
 
 class DataConfig(BaseModel):

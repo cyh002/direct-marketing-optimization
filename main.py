@@ -26,17 +26,29 @@ logger = get_logger(__name__)
 def run_inference(
     cfg: DictConfig,
     preprocessor: Preprocessor,
-    loader: DataLoader,
     datasets: dict,
     config_dict: dict,
+    numeric_features: list[str],
+    categorical_features: list[str],
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.Index]:
-    """Run propensity and revenue inference."""
+    """Run propensity and revenue inference.
+
+    Args:
+        cfg: Hydra configuration object.
+        preprocessor: Instance used to merge datasets.
+        datasets: Raw datasets to merge for inference.
+        config_dict: Configuration dictionary for inference objects.
+        numeric_features: Numeric feature list used during training.
+        categorical_features: Categorical feature list used during training.
+
+    Returns:
+        Tuple of propensity predictions, revenue predictions, and client index.
+    """
     logger.info("Merging datasets for inference")
     inference_df = preprocessor.merge_datasets(
         datasets, base_dataset_key="Sales_Revenues"
     )
-    numeric, categorical = loader.get_feature_lists()
-    X_inf = inference_df[numeric + categorical]
+    X_inf = inference_df[numeric_features + categorical_features]
     X_inf.index = inference_df["Client"]
     X_inf.index.name = "Client"
 
@@ -153,6 +165,16 @@ def main(cfg: DictConfig) -> None:
         )
     logger.info("Training dataset shape: %s", merged.shape)
     numeric, categorical = loader.get_feature_lists()
+    if (
+        cfg.preprocessing.collinearity_filter.enabled
+        and (
+            "linear_model" in cfg.propensity_model._target_
+            or "linear_model" in cfg.revenue_model._target_
+        )
+    ):
+        numeric = preprocessor.remove_multicollinearity(
+            merged, numeric
+        )
     X = merged[numeric + categorical]
     pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
     logger.info("Preprocessing pipeline created")
@@ -204,7 +226,12 @@ def main(cfg: DictConfig) -> None:
 
     logger.info("Starting inference")
     prop_preds, rev_preds, client_index = run_inference(
-        cfg, preprocessor, loader, datasets, config_dict
+        cfg,
+        preprocessor,
+        datasets,
+        config_dict,
+        numeric,
+        categorical,
     )
 
     logger.info("Starting optimization")

@@ -8,6 +8,8 @@ from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import OneHotEncoder
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+import numpy as np
 
 from .config_models import ConfigSchema
 from .logging import get_logger
@@ -171,6 +173,57 @@ class Preprocessor:
         train_df.to_csv(os.path.join(save_dir, "train.csv"), index=False)
         test_df.to_csv(os.path.join(save_dir, "test.csv"), index=False)
         self.logger.info("Saved train/test splits to %s", save_dir)
+
+    def remove_multicollinearity(
+        self,
+        df: pd.DataFrame,
+        numeric_features: List[str],
+        corr_threshold: Optional[float] = None,
+        vif_threshold: Optional[float] = None,
+    ) -> List[str]:
+        """Drop numeric features with high correlation or VIF.
+
+        Args:
+            df: Dataset containing the numeric features.
+            numeric_features: Names of numeric features to evaluate.
+            corr_threshold: Correlation threshold for dropping features.
+            vif_threshold: VIF threshold for dropping features.
+
+        Returns:
+            Filtered list of numeric feature names.
+        """
+
+        cfg = self.config.preprocessing.collinearity_filter
+        if corr_threshold is None:
+            corr_threshold = cfg.corr_threshold
+        if vif_threshold is None:
+            vif_threshold = cfg.vif_threshold
+
+        data = df[numeric_features].fillna(
+            self.config.preprocessing.numeric_imputer.fill_value
+        )
+        corr_matrix = data.corr().abs()
+        upper = corr_matrix.where(np.triu(np.ones(corr_matrix.shape), k=1).astype(bool))
+        to_drop = {col for col in upper.columns if any(upper[col] > corr_threshold)}
+
+        remaining = [f for f in numeric_features if f not in to_drop]
+        while len(remaining) > 1:
+            vif_values = [
+                variance_inflation_factor(data[remaining].values, i)
+                for i in range(len(remaining))
+            ]
+            max_vif = max(vif_values)
+            if max_vif <= vif_threshold:
+                break
+            drop_idx = int(np.argmax(vif_values))
+            to_drop.add(remaining[drop_idx])
+            remaining.pop(drop_idx)
+
+        if to_drop:
+            self.logger.info("Dropped due to collinearity: %s", sorted(to_drop))
+        else:
+            self.logger.info("No features dropped due to collinearity")
+        return remaining
 
     def create_preprocessing_pipeline(
         self, numeric_features: List[str], categorical_features: List[str]
