@@ -8,6 +8,7 @@ propensity_model:
   solver: "liblinear"
   l1_ratio: null
   max_iter: 200
+  class_weight: balanced
 
 hydra:
   sweeper:
