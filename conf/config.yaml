@@ -1,7 +1,7 @@
 defaults:
   - _self_
-  - propensity_model: logistic_regression
-  - revenue_model: linear_regression
+  - propensity_model: logistic_regression # [random_forest, logistic_regression, gradient_boosting]
+  - revenue_model: linear_regression # [linear_regression, random_forest, gradient_boosting]
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
 
@@ -80,9 +80,6 @@ optimization:
   diversification:
     enabled: false
     min_fraction_per_product: 0.2
-  robust:
-    enabled: false
-    confidence_level: 0.95
   save_path: "./results/optimized_offers.csv"
 
 evaluation:
