@@ -40,7 +40,7 @@ This repository contains a case study project for optimizing direct marketing ca
 This project provides the following key deliverables:
 
 -   **Executive Summary**: A concise overview of the project's methodology, findings, and recommendations, located in [`docs/executive_summary.md`](docs/executive_summary.md). The detailed results that directly answers the submission required questions are found in [`results.md`](docs/results.md).
--   **Targeted Client List**: An optimized CSV file listing clients recommended for marketing contact is available at each run under [outputs/results/optimized_offers.csv](/outputs/sample/gbc-gbr/results/optimized_offers.csv)
+-   **Targeted Client List**: An optimized CSV file listing clients recommended for marketing contact is available at each run under [outputs/results/optimized_offers.csv](/outputs/sample/logreg-lr/results/optimized_offers.csv)
 -   **Source Code**: A complete and modular codebase, including:
     -   [`main.py`](main.py): The main entry point for the data processing and modeling workflow.
     -   [`streamlit_app.py`](streamlit_app.py): An interactive dashboard for visualizing results and model performance.

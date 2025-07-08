@@ -9,25 +9,25 @@ For each product (Consumer Loan, Credit Card, Mutual Fund), we develop two predi
 
 ## 3. Key Findings & Impact  
 1. **Optimal Offer Mix & Revenue**  
-   - Under a 100‐contact campaign, the optimized strategy yields **\$1,150.50** total expected revenue (ROI = 11.5×; acceptance rate ≈63%).  
-   - Revenue per contact is **\$11.50**, significantly above contact cost, showing potential value in this strategy. 
+   - Under a 100‐contact campaign, the optimized strategy yields **\$693.62** total expected revenue (ROI = 6.94×; acceptance rate = 79.53%).  
+   - Revenue per contact is **\$6.94**, above contact cost.  
 
 2. **Product Prioritization**  
-   - **Consumer Loans (CL)** represent **66%** of chosen offers and drive ≈\$570 of revenue. Clients with multiple active deposit accounts and high transaction activity are prime targets.  
-   - **Credit Cards (CC)** account for **21%** of offers, contributing ≈\$687 in revenue. High overdraft counts and frequent card transactions characterize the top prospects.  
-   - **Mutual Funds (MF)** make up **13%** of offers, delivering ≈\$175. Ideal targets are clients with existing loan exposure and healthy transaction volumes.
+   - **Consumer Loans (CL)** represent **64%** of chosen offers, driving ≈\$420.37 in revenue.  
+   - **Credit Cards (CC)** account for **31%**, contributing ≈\$228.16.  
+   - **Mutual Funds (MF)** make up **5%**, delivering ≈\$35.48.  
 
 ## 4. Strategic Recommendations  
 
 - **Allocate Budget by Offer Type**  
-  Concentrate ~2/3 of contacts on Consumer Loan prospects, ~1/5 on Credit Card prospects, and remaining on Mutual Fund prospects to mirror expected‐value optimization. Consumer Loans seems like the easiest to sell. 
+  Concentrate ~2/3 of contacts on Consumer Loan prospects, ~1/3 on Credit Card prospects, and remaining on Mutual Fund prospects to mirror expected‐value optimization. Results show that consumer loans appeal to the most amount (64%) of customers, while mutual funds appeal to a small targeted number of customers (5%) with a high probability of acceptance (93.95%) of such offers. 
 
 - **Focus on Behavioral Signals and Financial Activity**  
   Transaction patterns (overdrafts, credit/debit activity) and existing product holdings (accounts, loans) are strong indicators of receptivity. 
 
 ## 5. Limitations & Assumptions  
 - **Model Accuracy & Data Imbalance**  
-  The underlying propensity models achieve modest F1‐scores (~0.29) on test data due to class imbalance. Predictions may misclassify some high-value prospects or overlook others.
+  The underlying propensity models achieve modest F1‐scores (~0.3958) on test data due to class imbalance. Predictions may misclassify some high-value prospects or overlook others.
 
 - **Causality vs. Correlation**  
   Features such as overdraft counts and existing loans correlate with product purchase but may reflect simultaneity (e.g. existing credit card holders also hold overdrafts). 

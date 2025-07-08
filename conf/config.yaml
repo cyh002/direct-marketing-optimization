@@ -1,7 +1,7 @@
 defaults:
   - _self_
   - propensity_model: logistic_regression
-  - revenue_model: gradient_boosting
+  - revenue_model: linear_regression
   - override hydra/sweeper: optuna
   - override hydra/sweeper/sampler: tpe
 
@@ -71,8 +71,8 @@ preprocessing:
   save_path: "./preprocessed"
   collinearity_filter:
     enabled: true
-    corr_threshold: 0.9
-    vif_threshold: 10.0
+    corr_threshold: 0.8
+    vif_threshold: 5.0
 
 optimization:
   contact_limit: 100
