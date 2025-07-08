@@ -167,16 +167,11 @@ def main(cfg: DictConfig) -> None:
         )
     logger.info("Training dataset shape: %s", merged.shape)
     numeric, categorical = loader.get_feature_lists()
-    if (
-        cfg.preprocessing.collinearity_filter.enabled
-        and (
-            "linear_model" in cfg.propensity_model._target_
-            or "linear_model" in cfg.revenue_model._target_
-        )
+    if cfg.preprocessing.collinearity_filter.enabled and (
+        "linear_model" in cfg.propensity_model._target_
+        or "linear_model" in cfg.revenue_model._target_
     ):
-        numeric = preprocessor.remove_multicollinearity(
-            merged, numeric
-        )
+        numeric = preprocessor.remove_multicollinearity(merged, numeric)
     X = merged[numeric + categorical]
     pipeline = preprocessor.create_preprocessing_pipeline(numeric, categorical)
     logger.info("Preprocessing pipeline created")
