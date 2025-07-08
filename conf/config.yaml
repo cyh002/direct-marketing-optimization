@@ -70,9 +70,9 @@ preprocessing:
   enable_save: true
   save_path: "./preprocessed"
   collinearity_filter:
-    enabled: false
-    corr_threshold: 0.8
-    vif_threshold: 5.0
+    enabled: true
+    corr_threshold: 0.9
+    vif_threshold: 10.0
 
 optimization:
   contact_limit: 100
