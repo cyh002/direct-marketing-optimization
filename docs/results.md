@@ -18,7 +18,7 @@
 | CL      | RandomForestClassifier     | 0.950234000 | 0.344303802 |
 
 ### Revenue Models
-*Gradient Boosting Regressor* shows the lowest average MSE test score at **9.1962**.
+*Linear Regression* shows the lowest average MSE test score at **9.1962**.
 
 | Product | Model                      | Train Score | Test Score |
 | :------ | :------------------------- | ----------: | ---------: |
@@ -84,7 +84,7 @@ Clients who have active debit card transactions / deposits show positive correla
 
 **Which clients are to be targeted with which offer?**
 
-Refer to [here.](/outputs/sample/logreg-gbr/results/optimized_offers.csv)
+Refer to [here.](/outputs/sample/logreg-lr/results/optimized_offers.csv)
 
 **What would be the expected revenue based on your strategy?**
 
